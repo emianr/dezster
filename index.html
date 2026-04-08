@@ -809,6 +809,200 @@
     .hero-sub      { animation-delay: .25s; }
     .hero-actions  { animation-delay: .35s; }
     .hero-stats    { animation-delay: .45s; }
+
+    /* ════════════════════════════════════════
+       MENÚ HAMBURGUESA (solo celular)
+    ════════════════════════════════════════ */
+    .hamburger {
+      display: none;
+      flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--white); transition: all .3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-menu {
+      display: none;
+      position: fixed; inset: 0; top: 60px; z-index: 190;
+      background: var(--black);
+      flex-direction: column;
+      padding: 40px 32px;
+      border-top: 1px solid var(--border);
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 32px; font-weight: 900; letter-spacing: 2px;
+      color: var(--white); text-transform: uppercase;
+      padding: 16px 0; border-bottom: 1px solid var(--border);
+      transition: color .2s;
+    }
+    .mobile-menu a:hover { color: var(--red); }
+    .mobile-menu-footer {
+      margin-top: auto; padding-top: 32px;
+      display: flex; gap: 12px;
+    }
+
+    /* ════════════════════════════════════════
+       RESPONSIVE — TABLET (max 1024px)
+    ════════════════════════════════════════ */
+    @media (max-width: 1024px) {
+      nav { padding: 0 24px; }
+
+      .nav-center { gap: 20px; }
+      .nav-center a { font-size: 11px; letter-spacing: 2px; }
+
+      .hero { grid-template-columns: 1fr 1fr; min-height: 80vh; }
+      .hero-left { padding: 48px 24px; }
+
+      .section { padding: 60px 24px; }
+      .feat-banner { margin: 0 24px; }
+      .chars-section { padding: 60px 24px; }
+
+      .prod-grid { grid-template-columns: repeat(2, 1fr); }
+
+      footer { padding: 48px 24px 32px; gap: 32px; }
+      .foot-bottom { margin: 0 24px; }
+
+      .cat-grid { grid-template-columns: 1fr 1fr; }
+      .cat-card.big { grid-column: span 2; grid-row: span 1; min-height: 220px; }
+    }
+
+    /* ════════════════════════════════════════
+       RESPONSIVE — CELULAR (max 768px)
+    ════════════════════════════════════════ */
+    @media (max-width: 768px) {
+
+      /* NAV MÓVIL */
+      nav {
+        padding: 0 20px; height: 60px;
+      }
+      .nav-center { display: none; }
+      .nav-btn { display: none; }
+      .hamburger { display: flex; }
+      .logo { font-size: 28px; }
+      .cart-btn {
+        padding: 8px 14px; font-size: 10px; letter-spacing: 2px;
+      }
+
+      /* HERO MÓVIL — apilado verticalmente */
+      .hero {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        min-height: auto;
+      }
+      .hero-left {
+        padding: 48px 20px 40px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .hero-h1 {
+        font-size: clamp(56px, 14vw, 90px);
+        letter-spacing: -1px;
+      }
+      .hero-sub { font-size: 13px; margin: 20px 0 32px; }
+      .hero-actions { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .btn-red, .btn-ghost { width: 100%; text-align: center; padding: 15px 20px; }
+      .hero-stats { gap: 24px; margin-top: 40px; padding-top: 28px; }
+      .stat-num { font-size: 22px; }
+
+      .hero-right {
+        grid-template-rows: 280px 160px;
+      }
+      .hero-img-split { grid-template-columns: 1fr 1fr; }
+
+      /* MARQUEE */
+      .mq-item span { font-size: 11px; letter-spacing: 4px; }
+
+      /* SECCIONES */
+      .section { padding: 48px 20px; }
+      .sec-title { font-size: 36px; }
+      .sec-head { flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 28px; }
+
+      /* PRODUCTOS */
+      .prod-grid { grid-template-columns: repeat(2, 1fr); }
+      .prod-name { font-size: 13px; }
+      .prod-price { font-size: 14px; }
+
+      /* BANNER FEATURE */
+      .feat-banner {
+        margin: 0 20px;
+        grid-template-columns: 1fr;
+      }
+      .feat-img { min-height: 260px; order: -1; }
+      .feat-content { padding: 40px 28px; }
+      .feat-title { font-size: clamp(40px, 10vw, 60px); }
+
+      /* PERSONAJES */
+      .chars-section { padding: 48px 20px; }
+      .chars-grid { grid-template-columns: 1fr; }
+      .char-card { min-height: 400px; }
+      .char-name { font-size: 44px; }
+
+      /* CATEGORÍAS */
+      .cat-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+      }
+      .cat-card.big {
+        grid-column: span 2; grid-row: span 1;
+        min-height: 180px;
+      }
+      .cat-card { min-height: 140px; padding: 20px; }
+      .cat-name { font-size: 20px; }
+
+      /* INSTAGRAM */
+      .insta-grid { grid-template-columns: repeat(3, 1fr); }
+      .insta-grid .insta-cell:nth-child(4),
+      .insta-grid .insta-cell:nth-child(5) { display: none; }
+
+      /* FOOTER */
+      footer {
+        grid-template-columns: 1fr 1fr;
+        padding: 48px 20px 32px; gap: 32px;
+      }
+      .foot-brand { grid-column: span 2; }
+      .foot-logo { font-size: 40px; }
+      .foot-bottom {
+        margin: 0 20px;
+        flex-direction: column; gap: 8px; text-align: center;
+      }
+
+      /* MODAL PRODUCTO — pantalla completa en móvil */
+      .prod-modal {
+        grid-template-columns: 1fr;
+        max-height: 95vh;
+        overflow-y: auto;
+        margin: auto 12px 0;
+        align-self: flex-end;
+      }
+      .prod-modal-img { min-height: 300px; }
+      .prod-modal-info { padding: 28px 24px; }
+      .prod-modal-overlay { align-items: flex-end; padding: 0; }
+
+      /* CARRITO — ancho completo en móvil */
+      .cart-modal { width: 100%; }
+
+      /* CONTACTO */
+      #contacto .btn-red,
+      #contacto .btn-ghost { width: 100%; }
+      #contacto > div > div { flex-direction: column; }
+    }
+
+    /* ════════════════════════════════════════
+       RESPONSIVE — CELULAR PEQUEÑO (max 400px)
+    ════════════════════════════════════════ */
+    @media (max-width: 400px) {
+      .prod-grid { grid-template-columns: 1fr; }
+      .hero-h1 { font-size: 52px; }
+      .ann-item { font-size: 10px; letter-spacing: 3px; }
+    }
+
   </style>
 </head>
 <body>
@@ -857,8 +1051,26 @@
   <div class="nav-right">
     <button class="nav-btn">Buscar</button>
     <button class="cart-btn" onclick="openCart()">Carrito (<span id="cart-count">0</span>)</button>
+    <!-- BOTÓN HAMBURGUESA — solo visible en celular -->
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+
+<!-- MENÚ MÓVIL -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#drops"      onclick="closeMenu()">Drops</a>
+  <a href="#hombre"     onclick="closeMenu()">Hombre</a>
+  <a href="#mujer"      onclick="closeMenu()">Mujer</a>
+  <a href="#personajes" onclick="closeMenu()">Personajes</a>
+  <a href="#contacto"   onclick="closeMenu()">Contacto</a>
+  <div class="mobile-menu-footer">
+    <button class="social-btn" onclick="window.open('https://instagram.com/dezter.cl','_blank')">IG</button>
+    <button class="social-btn" onclick="window.open('https://tiktok.com/@dezter','_blank')">TK</button>
+    <button class="social-btn" onclick="window.open('https://wa.me/56900000000','_blank')">WP</button>
+  </div>
+</div>
 
 <!-- ══════════════════════════════════════
      HERO
@@ -1431,6 +1643,20 @@
      JAVASCRIPT — CARRITO Y MODALES
 ══════════════════════════════════════ -->
 <script>
+  /* ── MENÚ HAMBURGUESA ── */
+  function toggleMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const btn  = document.getElementById('hamburger');
+    menu.classList.toggle('open');
+    btn.classList.toggle('open');
+    document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+  }
+  function closeMenu() {
+    document.getElementById('mobile-menu').classList.remove('open');
+    document.getElementById('hamburger').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
   /* ── ESTADO DEL CARRITO ── */
   let cart = [];
   let currentProduct = null;
