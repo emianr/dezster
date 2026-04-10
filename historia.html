@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nuestra Historia — Dezster Chile</title>
+  <meta name="description" content="La historia de Dezster Chile. Nacida en el desierto de Calama, creada por Jacko y Drem." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:    #E8000D;
+      --black:  #080808;
+      --black2: #111111;
+      --black3: #1a1a1a;
+      --white:  #F0EDE8;
+      --gray:   #666666;
+      --border: #1e1e1e;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Barlow', sans-serif;
+      overflow-x: hidden;
+    }
+    img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    a   { text-decoration: none; color: inherit; }
+
+    /* ── NAV ── */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 70px;
+      background: var(--black);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .logo {
+      font-family: 'UnifrakturMaguntia', cursive;
+      font-size: 32px; color: var(--white);
+      cursor: pointer; transition: color .2s;
+    }
+    .logo:hover { color: var(--red); }
+    .nav-back {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 4px;
+      background: none; border: 1px solid var(--border);
+      color: var(--gray); padding: 10px 20px; cursor: pointer;
+      text-transform: uppercase; transition: all .2s;
+    }
+    .nav-back:hover { border-color: var(--white); color: var(--white); }
+
+    /* ── HERO DE LA PÁGINA ── */
+    .page-hero {
+      min-height: 60vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 80px 48px;
+      position: relative; overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 30% 50%, rgba(232,0,13,.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 50%, rgba(232,0,13,.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    /* Grilla de fondo */
+    .page-hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(232,0,13,.03) 60px, rgba(232,0,13,.03) 61px),
+        repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(232,0,13,.03) 60px, rgba(232,0,13,.03) 61px);
+      pointer-events: none;
+    }
+    .page-hero-content { position: relative; z-index: 2; }
+
+    .hero-eyebrow {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 8px;
+      color: var(--red); text-transform: uppercase;
+      margin-bottom: 24px;
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+    }
+    .hero-eyebrow::before,
+    .hero-eyebrow::after {
+      content: ''; display: block;
+      width: 40px; height: 1px; background: var(--red);
+    }
+
+    .page-title {
+      font-family: 'UnifrakturMaguntia', cursive;
+      font-size: clamp(52px, 10vw, 120px);
+      color: var(--white); line-height: .9;
+      margin-bottom: 32px;
+      text-shadow: 0 0 60px rgba(232,0,13,.3);
+    }
+    .page-title span { color: var(--red); }
+
+    .page-subtitle {
+      font-size: 15px; font-weight: 300; font-style: italic;
+      color: var(--gray); line-height: 1.8;
+      max-width: 520px; margin: 0 auto;
+    }
+
+    /* ── HISTORIA — CONTENIDO ── */
+    .historia-wrap {
+      max-width: 820px; margin: 0 auto;
+      padding: 100px 48px;
+    }
+
+    /* Párrafo de apertura grande */
+    .opening-quote {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 900; text-transform: uppercase;
+      letter-spacing: -1px; line-height: 1;
+      color: var(--white); margin-bottom: 64px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid var(--border);
+    }
+    .opening-quote span { color: var(--red); }
+
+    /* Bloque de texto */
+    .historia-block {
+      margin-bottom: 72px;
+    }
+    .historia-block-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 6px;
+      color: var(--red); text-transform: uppercase;
+      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .historia-block-label::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+    .historia-block p {
+      font-size: 16px; font-weight: 300;
+      color: rgba(240,237,232,.75);
+      line-height: 1.95; margin-bottom: 20px;
+    }
+    .historia-block p:last-child { margin-bottom: 0; }
+    .historia-block strong {
+      font-weight: 400; color: var(--white);
+    }
+
+    /* Frase destacada */
+    .pull-quote {
+      border-left: 3px solid var(--red);
+      padding: 24px 32px;
+      margin: 56px 0;
+      background: rgba(232,0,13,.04);
+    }
+    .pull-quote p {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(20px, 4vw, 32px);
+      font-weight: 700; text-transform: uppercase;
+      letter-spacing: .5px; line-height: 1.2;
+      color: var(--white);
+    }
+    .pull-quote cite {
+      display: block; margin-top: 12px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 4px;
+      color: var(--red); text-transform: uppercase;
+      font-style: normal;
+    }
+
+    /* Cards de fundadores */
+    .founders-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; background: var(--black3);
+      border: 1px solid var(--black3);
+      margin: 72px 0;
+    }
+    .founder-card {
+      background: var(--black2);
+      padding: 48px 40px;
+      position: relative; overflow: hidden;
+    }
+    .founder-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 3px;
+      background: var(--red);
+    }
+    .founder-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 80px; font-weight: 900;
+      color: rgba(232,0,13,.06);
+      position: absolute; top: 16px; right: 24px;
+      line-height: 1;
+    }
+    .founder-tag {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 5px;
+      color: var(--red); text-transform: uppercase;
+      margin-bottom: 16px; display: block;
+    }
+    .founder-name {
+      font-family: 'UnifrakturMaguntia', cursive;
+      font-size: 48px; color: var(--white);
+      margin-bottom: 20px; line-height: 1;
+    }
+    .founder-desc {
+      font-size: 13px; font-weight: 300;
+      color: var(--gray); line-height: 1.8;
+    }
+
+    /* Valores / Pillars */
+    .pillars {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: var(--black3);
+      border: 1px solid var(--black3);
+      margin: 72px 0;
+    }
+    .pillar {
+      background: var(--black2);
+      padding: 36px 28px;
+      text-align: center;
+    }
+    .pillar-icon {
+      font-size: 28px; margin-bottom: 16px;
+      display: block; opacity: .6;
+    }
+    .pillar-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px; font-weight: 900; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--white);
+      margin-bottom: 10px;
+    }
+    .pillar-desc {
+      font-size: 12px; color: var(--gray); line-height: 1.7;
+    }
+
+    /* Cierre épico */
+    .closing {
+      text-align: center;
+      padding: 80px 0 0;
+      border-top: 1px solid var(--border);
+    }
+    .closing-big {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(40px, 8vw, 96px);
+      font-weight: 900; text-transform: uppercase;
+      letter-spacing: -2px; line-height: .88;
+      color: var(--white); margin-bottom: 32px;
+    }
+    .closing-big .outline {
+      -webkit-text-stroke: 1.5px var(--white);
+      color: transparent;
+    }
+    .closing-big .red { color: var(--red); }
+    .closing-sub {
+      font-size: 13px; color: var(--gray);
+      letter-spacing: 3px; text-transform: uppercase;
+      margin-bottom: 48px;
+    }
+    .closing-btn {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px; font-weight: 700; letter-spacing: 4px;
+      background: var(--red); color: var(--black);
+      border: none; padding: 18px 56px;
+      cursor: pointer; text-transform: uppercase; transition: all .2s;
+    }
+    .closing-btn:hover { background: #ff1a24; transform: translateY(-2px); }
+
+    /* Animación de entrada */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in {
+      opacity: 0;
+      animation: fadeInUp .8s ease forwards;
+    }
+
+    /* ── FOOTER MINI ── */
+    .mini-footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 48px;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 80px;
+    }
+    .mini-footer span {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 4px;
+      color: #333; text-transform: uppercase;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; height: 60px; }
+      .logo { font-size: 26px; }
+      .page-hero { padding: 60px 20px; min-height: 50vh; }
+      .historia-wrap { padding: 60px 20px; }
+      .founders-grid { grid-template-columns: 1fr; }
+      .pillars { grid-template-columns: 1fr; }
+      .opening-quote { font-size: clamp(24px, 7vw, 36px); margin-bottom: 48px; padding-bottom: 36px; }
+      .founder-name { font-size: 36px; }
+      .mini-footer { flex-direction: column; gap: 8px; text-align: center; padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html"><span class="logo">Dezster</span></a>
+  <button class="nav-back" onclick="window.location.href='index.html'">← Volver a la Tienda</button>
+</nav>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="page-hero-content">
+    <p class="hero-eyebrow">El Origen</p>
+    <h1 class="page-title">Nuestra<br><span>Historia</span></h1>
+    <p class="page-subtitle">
+      En el norte de Chile, donde el desierto dibuja paisajes infinitos,
+      nació algo más que una amistad.
+    </p>
+  </div>
+</div>
+
+<!-- CONTENIDO -->
+<div class="historia-wrap">
+
+  <!-- FRASE DE APERTURA -->
+  <div class="opening-quote fade-in">
+    Nacimos en Calama.<br>
+    <span>No pedimos</span> permiso.<br>
+    Y esto recién comienza.
+  </div>
+
+  <!-- BLOQUE 1 — El origen -->
+  <div class="historia-block fade-in">
+    <div class="historia-block-label">01 — El origen</div>
+    <p>
+      En el norte de Chile, donde el desierto de Calama dibuja paisajes infinitos y el sol marca el ritmo de los días,
+      nació algo más que una amistad: <strong>nació una visión.</strong>
+    </p>
+    <p>
+      Jacko y Drem crecieron entre música, arte y calles que inspiraban rebeldía creativa.
+      Desde siempre estuvieron conectados con la moda, la estética y la necesidad de expresar lo que llevaban dentro.
+      No se trataba solo de vestir, sino de comunicar — de transformar ideas en identidad.
+    </p>
+  </div>
+
+  <!-- PULL QUOTE -->
+  <div class="pull-quote fade-in">
+    <p>"No se trataba solo de vestir,<br>sino de comunicar."</p>
+    <cite>— Jacko &amp; Drem, Fundadores</cite>
+  </div>
+
+  <!-- BLOQUE 2 — La chispa -->
+  <div class="historia-block fade-in">
+    <div class="historia-block-label">02 — La chispa</div>
+    <p>
+      Entre sesiones de música, pinceles, cámaras y referencias de todo el mundo,
+      entendieron que sus diferencias no los separaban… <strong>los potenciaban.</strong>
+    </p>
+    <p>
+      Dos mentes distintas. Dos formas de ver la vida. Un mismo objetivo:
+      crear algo auténtico que representara lo que son, de dónde vienen y hacia dónde van.
+    </p>
+  </div>
+
+  <!-- CARDS FUNDADORES -->
+  <div class="founders-grid fade-in">
+    <div class="founder-card">
+      <span class="founder-num">01</span>
+      <span class="founder-tag">Cofundador</span>
+      <div class="founder-name">Jacko</div>
+      <p class="founder-desc">
+        Música, arte y actitud. Jacko trae la energía de las calles del norte,
+        la rebeldía visual y el instinto creativo que define la identidad de Dezster.
+      </p>
+    </div>
+    <div class="founder-card">
+      <span class="founder-num">02</span>
+      <span class="founder-tag">Cofundador</span>
+      <div class="founder-name">Drem</div>
+      <p class="founder-desc">
+        Visión, estética y dirección. Drem conecta los mundos del diseño y la cultura,
+        construyendo el universo visual y conceptual que hace única a Dezster.
+      </p>
+    </div>
+  </div>
+
+  <!-- BLOQUE 3 — La marca -->
+  <div class="historia-block fade-in">
+    <div class="historia-block-label">03 — La marca</div>
+    <p>
+      Así nació <strong>Dezster Chile.</strong>
+    </p>
+    <p>
+      Una marca pensada para quienes no siguen reglas, para quienes encuentran belleza en lo distinto
+      y hacen de la creatividad su lenguaje. Cada diseño es una mezcla de mundos:
+      el sonido, la imagen, la calle, el arte.
+    </p>
+    <p>
+      Cada prenda representa una historia, una energía, una postura frente a la vida.
+      Los personajes que forman Dezster no son solo estética —
+      son reflejos de Jacko y Drem, de sus creencias, sus contrastes y su forma única de ver el mundo.
+    </p>
+  </div>
+
+  <!-- VALORES -->
+  <div class="pillars fade-in">
+    <div class="pillar">
+      <span class="pillar-icon">⚡</span>
+      <div class="pillar-title">Identidad</div>
+      <p class="pillar-desc">Cada pieza es una declaración. No solo ropa — es quién eres.</p>
+    </div>
+    <div class="pillar">
+      <span class="pillar-icon">🔥</span>
+      <div class="pillar-title">Actitud</div>
+      <p class="pillar-desc">Sin reglas, sin límites. La calle como runway.</p>
+    </div>
+    <div class="pillar">
+      <span class="pillar-icon">✦</span>
+      <div class="pillar-title">Comunidad</div>
+      <p class="pillar-desc">Más que clientes — son parte del universo Dezster.</p>
+    </div>
+  </div>
+
+  <!-- BLOQUE FINAL -->
+  <div class="historia-block fade-in">
+    <div class="historia-block-label">04 — El futuro</div>
+    <p>
+      Esto no es solo ropa. Es identidad. Es actitud. Es una comunidad.
+    </p>
+    <p>
+      <strong>Hoy es Chile. Mañana, el mundo.</strong>
+    </p>
+    <p>
+      Y esto recién comienza.
+    </p>
+  </div>
+
+  <!-- CIERRE -->
+  <div class="closing fade-in">
+    <div class="closing-big">
+      <span class="outline">Hoy</span><br>
+      <span class="red">Chile.</span><br>
+      Mañana<br>
+      <span class="outline">el mundo.</span>
+    </div>
+    <p class="closing-sub">Dezster Chile · Calama · 2025</p>
+    <button class="closing-btn" onclick="window.location.href='index.html'">
+      Ver la Colección →
+    </button>
+  </div>
+
+</div>
+
+<!-- FOOTER MINI -->
+<div class="mini-footer">
+  <span>© 2025 Dezster Chile — Todos los derechos reservados</span>
+  <span>Calama, Chile</span>
+</div>
+
+<script>
+  /* Animación de entrada al hacer scroll */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animationDelay = '0s';
+        entry.target.style.opacity = '1';
+        entry.target.style.animationPlayState = 'running';
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.fade-in').forEach((el, i) => {
+    el.style.animationDelay = (i * 0.1) + 's';
+    el.style.animationPlayState = 'paused';
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
