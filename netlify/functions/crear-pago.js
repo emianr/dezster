@@ -116,7 +116,7 @@ exports.handler = async (event) => {
     const comercioOrden = 'DZS-' + Date.now();
 
     // ── URL base del sitio (donde está alojado) ──
-    const siteUrl = process.env.URL || 'https://lustrous-kitten-2fc51b.netlify.app';
+    const siteUrl = process.env.SITE_URL || 'https://lustrous-kitten-2fc51b.netlify.app';
 
     // ── Parámetros para Flow payment/create ──
     const params = {
