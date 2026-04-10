@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>¡Gracias por tu compra! — Dezster Chile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --red: #E8000D; --black: #080808; --white: #F0EDE8;
+      --gray: #666; --border: #1e1e1e;
+    }
+    body {
+      background: var(--black); color: var(--white);
+      font-family: 'Barlow', sans-serif;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+    nav {
+      padding: 0 48px; height: 70px;
+      display: flex; align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-family: 'UnifrakturMaguntia', cursive;
+      font-size: 32px; color: var(--white);
+    }
+    .main {
+      flex: 1; display: flex;
+      align-items: center; justify-content: center;
+      padding: 60px 20px; text-align: center;
+    }
+    .card {
+      max-width: 560px; width: 100%;
+      border: 1px solid var(--border);
+      padding: 64px 48px;
+      position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--red);
+    }
+    .check-circle {
+      width: 72px; height: 72px;
+      border: 2px solid var(--red);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 32px;
+      font-size: 32px;
+    }
+    .gracias-titulo {
+      font-family: 'UnifrakturMaguntia', cursive;
+      font-size: 56px; color: var(--white);
+      margin-bottom: 16px; line-height: 1;
+    }
+    .orden-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 5px;
+      color: var(--red); text-transform: uppercase; margin-bottom: 28px;
+    }
+    .mensaje {
+      font-size: 14px; color: var(--gray);
+      line-height: 1.8; margin-bottom: 40px;
+    }
+    .divider {
+      border: none; border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+    .pasos {
+      text-align: left; margin-bottom: 40px;
+    }
+    .paso {
+      display: flex; gap: 16px; margin-bottom: 16px;
+      align-items: flex-start;
+    }
+    .paso-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 3px;
+      color: var(--red); background: rgba(232,0,13,.1);
+      padding: 4px 10px; flex-shrink: 0; margin-top: 2px;
+    }
+    .paso-texto {
+      font-size: 13px; color: var(--gray); line-height: 1.7;
+    }
+    .paso-texto strong { color: var(--white); font-weight: 400; }
+    .btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-red {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px; font-weight: 700; letter-spacing: 4px;
+      background: var(--red); color: var(--black);
+      border: none; padding: 15px 36px; cursor: pointer;
+      text-transform: uppercase; transition: background .2s;
+    }
+    .btn-red:hover { background: #ff1a24; }
+    .btn-ghost {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px; font-weight: 700; letter-spacing: 4px;
+      background: transparent; color: var(--white);
+      border: 1px solid var(--border); padding: 15px 36px;
+      cursor: pointer; text-transform: uppercase; transition: border-color .2s;
+    }
+    .btn-ghost:hover { border-color: var(--white); }
+    @media (max-width: 600px) {
+      nav { padding: 0 20px; }
+      .card { padding: 40px 24px; }
+      .gracias-titulo { font-size: 40px; }
+      .btns { flex-direction: column; }
+      .btn-red, .btn-ghost { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html"><span class="logo">Dezster</span></a>
+</nav>
+
+<div class="main">
+  <div class="card">
+    <div class="check-circle">✓</div>
+
+    <h1 class="gracias-titulo">¡Gracias!</h1>
+    <p class="orden-num" id="orden-texto">Procesando tu orden...</p>
+
+    <p class="mensaje">
+      Tu pago fue recibido con éxito. Pronto nos pondremos en contacto
+      contigo para coordinar el envío de tu pedido.
+    </p>
+
+    <hr class="divider" />
+
+    <div class="pasos">
+      <div class="paso">
+        <span class="paso-num">01</span>
+        <p class="paso-texto"><strong>Confirmación por email</strong><br>
+        Recibirás un email de Flow con el comprobante de tu pago.</p>
+      </div>
+      <div class="paso">
+        <span class="paso-num">02</span>
+        <p class="paso-texto"><strong>Contacto de Dezster</strong><br>
+        En menos de 24 hrs te contactamos por WhatsApp para coordinar el despacho.</p>
+      </div>
+      <div class="paso">
+        <span class="paso-num">03</span>
+        <p class="paso-texto"><strong>Envío a todo Chile</strong><br>
+        Tu pedido sale desde Calama. Tiempo estimado: 3 a 7 días hábiles.</p>
+      </div>
+    </div>
+
+    <div class="btns">
+      <button class="btn-red" onclick="window.location.href='index.html'">
+        Seguir Comprando →
+      </button>
+      <button class="btn-ghost"
+        onclick="window.open('https://wa.me/56966942574?text=' + encodeURIComponent('Hola! Acabo de hacer un pedido en Dezster Chile. ¿Cómo hago el seguimiento?'), '_blank')">
+        Hablar por WhatsApp
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Leer el número de orden si viene en la URL
+  const params = new URLSearchParams(window.location.search);
+  const orden  = params.get('orden') || params.get('commerceOrder');
+  if (orden) {
+    document.getElementById('orden-texto').textContent = 'Orden #' + orden;
+  } else {
+    document.getElementById('orden-texto').textContent = 'Pago confirmado';
+  }
+</script>
+
+</body>
+</html>
