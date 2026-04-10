@@ -55,8 +55,154 @@
     a { text-decoration: none; color: inherit; }
 
     /* ════════════════════════════════════════
-       ANNOUNCEMENT BAR
+       PANTALLA DE ENTRADA — ESTILO NETFLIX
     ════════════════════════════════════════ */
+    #intro-screen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #000;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    #intro-screen.hide {
+      animation: introOut 1s ease forwards;
+      pointer-events: none;
+    }
+    @keyframes introOut {
+      0%   { opacity: 1; transform: scale(1); }
+      60%  { opacity: 1; transform: scale(1.04); }
+      100% { opacity: 0; transform: scale(1.04); }
+    }
+
+    /* Partículas de fondo */
+    .intro-particles {
+      position: absolute; inset: 0; overflow: hidden; z-index: 0;
+    }
+    .particle {
+      position: absolute; border-radius: 50%;
+      background: var(--red); opacity: 0;
+      animation: particleFloat linear infinite;
+    }
+    @keyframes particleFloat {
+      0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+      10%  { opacity: .15; }
+      90%  { opacity: .08; }
+      100% { transform: translateY(-20vh) scale(1.5); opacity: 0; }
+    }
+
+    /* Líneas de fondo */
+    .intro-lines {
+      position: absolute; inset: 0; z-index: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 80px, rgba(232,0,13,.04) 80px, rgba(232,0,13,.04) 81px),
+        repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(232,0,13,.04) 80px, rgba(232,0,13,.04) 81px);
+    }
+
+    .intro-content {
+      position: relative; z-index: 2;
+      text-align: center;
+      display: flex; flex-direction: column; align-items: center;
+    }
+
+    /* Logo grande que aparece */
+    .intro-logo {
+      font-family: 'UnifrakturMaguntia', cursive;
+      font-size: clamp(72px, 18vw, 200px);
+      color: var(--white);
+      line-height: 1;
+      opacity: 0;
+      transform: scale(.7);
+      animation: logoReveal 1.2s cubic-bezier(.16,1,.3,1) .3s forwards;
+      text-shadow:
+        0 0 80px rgba(232,0,13,.5),
+        0 0 160px rgba(232,0,13,.2);
+      letter-spacing: 4px;
+    }
+    @keyframes logoReveal {
+      0%   { opacity: 0; transform: scale(.7); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Línea roja bajo el logo */
+    .intro-line {
+      width: 0; height: 2px; background: var(--red);
+      animation: lineExpand .8s ease 1.2s forwards;
+      margin: 20px 0 28px;
+    }
+    @keyframes lineExpand {
+      0%   { width: 0; }
+      100% { width: 180px; }
+    }
+
+    /* Texto bajo el logo */
+    .intro-tagline {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(11px, 2vw, 14px);
+      font-weight: 700; letter-spacing: 10px;
+      color: var(--gray); text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp .6s ease 1.6s forwards;
+    }
+
+    /* Botón entrar */
+    .intro-enter {
+      margin-top: 52px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px; font-weight: 700; letter-spacing: 6px;
+      background: var(--red); color: #000;
+      border: none; padding: 18px 56px;
+      cursor: pointer; text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp .6s ease 2s forwards;
+      transition: background .2s, transform .2s;
+      position: relative; overflow: hidden;
+    }
+    .intro-enter::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,.15);
+      transform: translateX(-100%);
+      transition: transform .4s;
+    }
+    .intro-enter:hover::after { transform: translateX(0); }
+    .intro-enter:hover { transform: scale(1.03); }
+
+    /* Hint "toca para entrar" en móvil */
+    .intro-hint {
+      position: absolute; bottom: 32px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 4px;
+      color: #2a2a2a; text-transform: uppercase;
+      opacity: 0; animation: fadeUp .5s ease 2.4s forwards;
+    }
+
+    /* Esquinas decorativas */
+    .intro-corner {
+      position: absolute; width: 40px; height: 40px;
+      border-color: rgba(232,0,13,.3); border-style: solid;
+      opacity: 0; animation: fadeUp .5s ease 1s forwards;
+    }
+    .intro-corner.tl { top: 40px; left: 40px; border-width: 1px 0 0 1px; }
+    .intro-corner.tr { top: 40px; right: 40px; border-width: 1px 1px 0 0; }
+    .intro-corner.bl { bottom: 40px; left: 40px; border-width: 0 0 1px 1px; }
+    .intro-corner.br { bottom: 40px; right: 40px; border-width: 0 1px 1px 0; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Scanline sutil */
+    .intro-scan {
+      position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,.03) 2px, rgba(0,0,0,.03) 4px
+      );
+    }
+
+
     .ann-bar {
       background: var(--red);
       padding: 9px 0;
@@ -1008,6 +1154,33 @@
 <body>
 
 <!-- ══════════════════════════════════════
+     PANTALLA DE ENTRADA — ESTILO NETFLIX
+══════════════════════════════════════ -->
+<div id="intro-screen" onclick="enterSite()">
+
+  <!-- Fondo decorativo -->
+  <div class="intro-lines"></div>
+  <div class="intro-scan"></div>
+  <div class="intro-particles" id="particles"></div>
+
+  <!-- Esquinas -->
+  <div class="intro-corner tl"></div>
+  <div class="intro-corner tr"></div>
+  <div class="intro-corner bl"></div>
+  <div class="intro-corner br"></div>
+
+  <!-- Contenido central -->
+  <div class="intro-content">
+    <div class="intro-logo">Dezter</div>
+    <div class="intro-line"></div>
+    <p class="intro-tagline">Drop Culture · Calama, Chile · 2025</p>
+    <button class="intro-enter" onclick="enterSite()">Entrar →</button>
+  </div>
+
+  <p class="intro-hint">Toca en cualquier lugar para entrar</p>
+</div>
+
+<!-- ══════════════════════════════════════
      ANNOUNCEMENT BAR
 ══════════════════════════════════════ -->
 <div class="ann-bar">
@@ -1057,7 +1230,7 @@
   <a href="#personajes" onclick="closeMenu()">Personajes</a>
   <a href="#contacto"   onclick="closeMenu()">Contacto</a>
   <div class="mobile-menu-footer">
-    <button class="social-btn" onclick="window.open('https://instagram.com/dezter.cl','_blank')">IG</button>
+    <button class="social-btn" onclick="window.open('https://www.instagram.com/dezsterchile','_blank')">IG</button>
     <button class="social-btn" onclick="window.open('https://tiktok.com/@dezter','_blank')">TK</button>
     <button class="social-btn" onclick="window.open('https://wa.me/56900000000','_blank')">WP</button>
   </div>
@@ -1423,10 +1596,10 @@
         WhatsApp: https://wa.me/56912345678
         Instagram: https://instagram.com/dezter.cl
       -->
-      <a href="https://wa.me/56900000000" target="_blank">
+      <a href="https://www.instagram.com/dezsterchile" target="_blank">
         <button class="btn-red">WhatsApp →</button>
       </a>
-      <a href="https://instagram.com/dezter.cl" target="_blank">
+      <a href="https://www.instagram.com/dezsterchile" target="_blank">
         <button class="btn-ghost">Instagram →</button>
       </a>
     </div>
@@ -1443,7 +1616,7 @@
       Drop culture desde Calama. Ropa sin género para quienes rompen las reglas.
     </p>
     <div class="foot-social">
-      <button class="social-btn" onclick="window.open('https://instagram.com/dezter.cl','_blank')">IG</button>
+      <button class="social-btn" onclick="window.open('https://www.instagram.com/dezsterchile','_blank')">IG</button>
       <button class="social-btn" onclick="window.open('https://tiktok.com/@dezter','_blank')">TK</button>
       <button class="social-btn" onclick="window.open('https://wa.me/56900000000','_blank')">WP</button>
     </div>
@@ -1548,6 +1721,39 @@
      JAVASCRIPT — CARRITO Y MODALES
 ══════════════════════════════════════ -->
 <script>
+  /* ══════════════════════════════════════
+     PANTALLA DE ENTRADA
+  ══════════════════════════════════════ */
+  function enterSite() {
+    const intro = document.getElementById('intro-screen');
+    intro.classList.add('hide');
+    setTimeout(() => {
+      intro.style.display = 'none';
+      document.body.style.overflow = '';
+    }, 1000);
+  }
+
+  /* Crear partículas flotantes */
+  (function createParticles() {
+    const container = document.getElementById('particles');
+    if (!container) return;
+    for (let i = 0; i < 18; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const size = Math.random() * 6 + 2;
+      p.style.cssText = `
+        width:${size}px; height:${size}px;
+        left:${Math.random() * 100}%;
+        animation-duration:${Math.random() * 12 + 8}s;
+        animation-delay:${Math.random() * 6}s;
+      `;
+      container.appendChild(p);
+    }
+  })();
+
+  /* Bloquear scroll mientras intro está visible */
+  document.body.style.overflow = 'hidden';
+
   /* ── MENÚ HAMBURGUESA ── */
   function toggleMenu() {
     const menu = document.getElementById('mobile-menu');
