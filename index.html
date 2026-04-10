@@ -1,173 +1,1936 @@
-// ════════════════════════════════════════════════════════
-//  DEZSTER — Función de pago con Flow.cl
-//  Netlify Function: /netlify/functions/crear-pago
-// ════════════════════════════════════════════════════════
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dezster — Drop Culture desde Calama</title>
+  <meta name="description" content="Dezster — Ropa sin género, drop culture desde Calama, Chile." />
 
-const crypto = require('crypto');
-const https  = require('https');
-const qs     = require('querystring');
+  <!-- ✅ FUENTES -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400&display=swap" rel="stylesheet" />
 
-// ── Claves Flow (variables de entorno en Netlify) ──
-const FLOW_API_KEY    = process.env.FLOW_API_KEY;
-const FLOW_SECRET_KEY = process.env.FLOW_SECRET_KEY;
-const FLOW_API_URL    = 'https://www.flow.cl/api';
+  <style>
+    /* ════════════════════════════════════════
+       VARIABLES Y RESET
+    ════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-// ── Firma requerida por Flow ──
-function firmar(params, secretKey) {
-  // Ordenar parámetros alfabéticamente
-  const keys = Object.keys(params).sort();
-  let cadena = '';
-  keys.forEach(k => { cadena += k + params[k]; });
-  return crypto
-    .createHmac('sha256', secretKey)
-    .update(cadena)
-    .digest('hex');
-}
+    :root {
+      --red:      #E8000D;
+      --red-dark: #9E0009;
+      --black:    #080808;
+      --black2:   #111111;
+      --black3:   #1a1a1a;
+      --white:    #F0EDE8;
+      --gray:     #666666;
+      --border:   #1e1e1e;
 
-// ── Llamada HTTPS a Flow ──
-function llamarFlow(endpoint, params) {
-  return new Promise((resolve, reject) => {
-    params.apiKey    = FLOW_API_KEY;
-    params.s         = firmar(params, FLOW_SECRET_KEY);
+      /* Personaje Diablood */
+      --diablood-red: #E8000D;
+      --diablood-dark: #0a0a0a;
 
-    const body = qs.stringify(params);
+      /* Personaje Kyros */
+      --kyros-yellow: #F5C518;
+      --kyros-white:  #F0EDE8;
+    }
 
-    const options = {
-      hostname: 'www.flow.cl',
-      path:     '/api/' + endpoint,
-      method:   'POST',
-      headers: {
-        'Content-Type':   'application/x-www-form-urlencoded',
-        'Content-Length': Buffer.byteLength(body),
-      },
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Barlow', sans-serif;
+      overflow-x: hidden;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* ════════════════════════════════════════
+       PANTALLA DE ENTRADA — ESTILO NETFLIX
+    ════════════════════════════════════════ */
+    #intro-screen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #000;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    #intro-screen.hide {
+      animation: introOut 1s ease forwards;
+      pointer-events: none;
+    }
+    @keyframes introOut {
+      0%   { opacity: 1; transform: scale(1); }
+      60%  { opacity: 1; transform: scale(1.04); }
+      100% { opacity: 0; transform: scale(1.04); }
+    }
+
+    /* Partículas de fondo */
+    .intro-particles {
+      position: absolute; inset: 0; overflow: hidden; z-index: 0;
+    }
+    .particle {
+      position: absolute; border-radius: 50%;
+      background: var(--red); opacity: 0;
+      animation: particleFloat linear infinite;
+    }
+    @keyframes particleFloat {
+      0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+      10%  { opacity: .15; }
+      90%  { opacity: .08; }
+      100% { transform: translateY(-20vh) scale(1.5); opacity: 0; }
+    }
+
+    /* Líneas de fondo */
+    .intro-lines {
+      position: absolute; inset: 0; z-index: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 80px, rgba(232,0,13,.04) 80px, rgba(232,0,13,.04) 81px),
+        repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(232,0,13,.04) 80px, rgba(232,0,13,.04) 81px);
+    }
+
+    .intro-content {
+      position: relative; z-index: 2;
+      text-align: center;
+      display: flex; flex-direction: column; align-items: center;
+    }
+
+    /* Logo grande que aparece */
+    .intro-logo {
+      font-family: 'UnifrakturMaguntia', cursive;
+      font-size: clamp(72px, 18vw, 200px);
+      color: var(--white);
+      line-height: 1;
+      opacity: 0;
+      transform: scale(.7);
+      animation: logoReveal 1.2s cubic-bezier(.16,1,.3,1) .3s forwards;
+      text-shadow:
+        0 0 80px rgba(232,0,13,.5),
+        0 0 160px rgba(232,0,13,.2);
+      letter-spacing: 4px;
+    }
+    @keyframes logoReveal {
+      0%   { opacity: 0; transform: scale(.7); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Línea roja bajo el logo */
+    .intro-line {
+      width: 0; height: 2px; background: var(--red);
+      animation: lineExpand .8s ease 1.2s forwards;
+      margin: 20px 0 28px;
+    }
+    @keyframes lineExpand {
+      0%   { width: 0; }
+      100% { width: 180px; }
+    }
+
+    /* Texto bajo el logo */
+    .intro-tagline {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(11px, 2vw, 14px);
+      font-weight: 700; letter-spacing: 10px;
+      color: var(--gray); text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp .6s ease 1.6s forwards;
+    }
+
+    /* Botón entrar */
+    .intro-enter {
+      margin-top: 52px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px; font-weight: 700; letter-spacing: 6px;
+      background: var(--red); color: #000;
+      border: none; padding: 18px 56px;
+      cursor: pointer; text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp .6s ease 2s forwards;
+      transition: background .2s, transform .2s;
+      position: relative; overflow: hidden;
+    }
+    .intro-enter::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,.15);
+      transform: translateX(-100%);
+      transition: transform .4s;
+    }
+    .intro-enter:hover::after { transform: translateX(0); }
+    .intro-enter:hover { transform: scale(1.03); }
+
+    /* Hint "toca para entrar" en móvil */
+    .intro-hint {
+      position: absolute; bottom: 32px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 4px;
+      color: #2a2a2a; text-transform: uppercase;
+      opacity: 0; animation: fadeUp .5s ease 2.4s forwards;
+    }
+
+    /* Esquinas decorativas */
+    .intro-corner {
+      position: absolute; width: 40px; height: 40px;
+      border-color: rgba(232,0,13,.3); border-style: solid;
+      opacity: 0; animation: fadeUp .5s ease 1s forwards;
+    }
+    .intro-corner.tl { top: 40px; left: 40px; border-width: 1px 0 0 1px; }
+    .intro-corner.tr { top: 40px; right: 40px; border-width: 1px 1px 0 0; }
+    .intro-corner.bl { bottom: 40px; left: 40px; border-width: 0 0 1px 1px; }
+    .intro-corner.br { bottom: 40px; right: 40px; border-width: 0 1px 1px 0; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Scanline sutil */
+    .intro-scan {
+      position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,.03) 2px, rgba(0,0,0,.03) 4px
+      );
+    }
+
+
+    .ann-bar {
+      background: var(--red);
+      padding: 9px 0;
+      overflow: hidden;
+    }
+    .ann-track {
+      display: flex;
+      gap: 80px;
+      white-space: nowrap;
+      animation: marquee 22s linear infinite;
+    }
+    .ann-item {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 5px;
+      color: var(--black); text-transform: uppercase; flex-shrink: 0;
+    }
+
+    /* ════════════════════════════════════════
+       NAV
+    ════════════════════════════════════════ */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 70px;
+      background: var(--black);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 200;
+    }
+    .logo {
+      font-family: 'UnifrakturMaguntia', cursive;
+      font-size: 36px; color: var(--white);
+      cursor: pointer; letter-spacing: 1px;
+      transition: color .2s;
+    }
+    .logo:hover { color: var(--red); }
+
+    .nav-center {
+      display: flex; gap: 36px; list-style: none;
+    }
+    .nav-center a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px; font-weight: 700; letter-spacing: 4px;
+      color: #888; text-transform: uppercase;
+      transition: color .2s; cursor: pointer;
+    }
+    .nav-center a:hover { color: var(--white); }
+
+    .nav-right { display: flex; gap: 20px; align-items: center; }
+    .nav-btn {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 4px;
+      background: transparent; border: none;
+      color: #666; cursor: pointer; text-transform: uppercase;
+      transition: color .2s; padding: 0;
+    }
+    .nav-btn:hover { color: var(--white); }
+    .cart-btn {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 3px;
+      background: var(--red); color: var(--black);
+      border: none; padding: 10px 22px; cursor: pointer;
+      text-transform: uppercase; transition: background .2s;
+    }
+    .cart-btn:hover { background: #ff1a24; }
+
+    /* ════════════════════════════════════════
+       HERO
+    ════════════════════════════════════════ */
+    .hero {
+      display: grid; grid-template-columns: 1fr 1fr;
+      min-height: 90vh;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-left {
+      padding: 80px 48px;
+      display: flex; flex-direction: column; justify-content: center;
+      border-right: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .hero-left::before {
+      content: '';
+      position: absolute; top: -40%; left: -20%;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(232,0,13,.13) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .drop-label {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 6px;
+      color: var(--red); text-transform: uppercase; margin-bottom: 28px;
+    }
+    .drop-label::before {
+      content: ''; display: block;
+      width: 24px; height: 1px; background: var(--red);
+    }
+    .hero-h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(72px, 9vw, 130px);
+      font-weight: 900; line-height: .88;
+      text-transform: uppercase; letter-spacing: -2px;
+      color: var(--white); margin-bottom: 8px;
+    }
+    .hero-h1 .outline {
+      -webkit-text-stroke: 1.5px var(--white);
+      color: transparent;
+    }
+    .hero-h1 .red-word { color: var(--red); }
+
+    .hero-sub {
+      font-size: 14px; font-weight: 300;
+      color: var(--gray); line-height: 1.8;
+      max-width: 360px; margin: 28px 0 48px;
+    }
+    .hero-actions { display: flex; gap: 16px; align-items: center; }
+
+    .btn-red {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px; font-weight: 700; letter-spacing: 4px;
+      background: var(--red); color: var(--black);
+      border: none; padding: 16px 40px; cursor: pointer;
+      text-transform: uppercase; transition: all .2s;
+    }
+    .btn-red:hover { background: #ff1a24; transform: translateY(-1px); }
+
+    .btn-ghost {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px; font-weight: 700; letter-spacing: 4px;
+      background: transparent; color: var(--white);
+      border: 1px solid #2e2e2e; padding: 16px 40px;
+      cursor: pointer; text-transform: uppercase; transition: all .2s;
+    }
+    .btn-ghost:hover { border-color: var(--white); }
+
+    .hero-stats {
+      display: flex; gap: 48px;
+      margin-top: 60px; padding-top: 40px;
+      border-top: 1px solid var(--border);
+    }
+    .stat-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 28px; font-weight: 900; color: var(--white);
+    }
+    .stat-label {
+      font-size: 11px; letter-spacing: 3px;
+      color: var(--gray); text-transform: uppercase; margin-top: 2px;
+    }
+
+    .hero-right {
+      display: grid; grid-template-rows: 60% 40%;
+    }
+    .hero-img-main {
+      background: var(--black2);
+      display: flex; align-items: center; justify-content: center;
+      border-bottom: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .hero-img-main::after {
+      content: 'DROP 001';
+      position: absolute; bottom: 20px; right: 20px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 5px;
+      color: var(--red); background: var(--black);
+      padding: 6px 14px; border: 1px solid var(--red);
+    }
+    .hero-img-split { display: grid; grid-template-columns: 1fr 1fr; }
+    .hero-img-sm {
+      background: var(--black3);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .hero-img-sm:first-child { border-right: 1px solid var(--border); }
+
+    /* ── PLACEHOLDER (se usa mientras no hay fotos reales) ── */
+    .ph {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 10px; width: 100%; height: 100%; min-height: 180px;
+    }
+    .ph-icon { opacity: .08; }
+    .ph span {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; letter-spacing: 5px;
+      color: #333; text-transform: uppercase;
+    }
+
+    /* ════════════════════════════════════════
+       MARQUEE BAR
+    ════════════════════════════════════════ */
+    .marquee-bar {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0; overflow: hidden;
+    }
+    .mq-track {
+      display: flex; animation: marquee 28s linear infinite;
+    }
+    .mq-item {
+      display: flex; align-items: center; gap: 20px;
+      padding: 0 40px; flex-shrink: 0;
+      border-right: 1px solid var(--border);
+    }
+    .mq-item span {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px; font-weight: 700; letter-spacing: 6px;
+      color: #333; text-transform: uppercase;
+    }
+    .mq-item i { color: var(--red); font-style: normal; font-size: 16px; }
+
+    /* ════════════════════════════════════════
+       SECCIONES GENÉRICAS
+    ════════════════════════════════════════ */
+    .section { padding: 80px 48px; }
+
+    .sec-head {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 48px;
+    }
+    .sec-eyebrow {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 6px;
+      color: var(--red); text-transform: uppercase; margin-bottom: 8px;
+    }
+    .sec-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 52px; font-weight: 900;
+      text-transform: uppercase; letter-spacing: -1px;
+      line-height: 1; color: var(--white);
+    }
+    .see-all {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 4px;
+      color: var(--gray); text-transform: uppercase;
+      background: none; border: none; cursor: pointer;
+      transition: color .2s;
+    }
+    .see-all:hover { color: var(--red); }
+
+    /* ════════════════════════════════════════
+       GRID DE PRODUCTOS
+    ════════════════════════════════════════ */
+    .prod-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px; background: var(--black3);
+      border: 1px solid var(--black3);
+    }
+    .prod-card {
+      background: var(--black);
+      cursor: pointer; transition: background .3s;
+    }
+    .prod-card:hover { background: #0f0f0f; }
+
+    .prod-img {
+      aspect-ratio: 3 / 4;
+      background: var(--black2);
+      position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .prod-img img { position: absolute; inset: 0; transition: transform .5s; }
+    .prod-card:hover .prod-img img { transform: scale(1.04); }
+
+    .prod-badge {
+      position: absolute; top: 0; left: 0;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 4px;
+      padding: 7px 14px; text-transform: uppercase; z-index: 2;
+    }
+    .badge-new  { background: var(--red); color: var(--black); }
+    .badge-drop { background: var(--black); color: var(--red); border-right: 1px solid var(--red); border-bottom: 1px solid var(--red); }
+    .badge-sold { background: #1a1a1a; color: var(--gray); }
+
+    .prod-info { padding: 16px 16px 20px; }
+    .prod-cat {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 4px;
+      color: var(--gray); text-transform: uppercase; margin-bottom: 4px;
+    }
+    .prod-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 17px; font-weight: 700; letter-spacing: 1px;
+      color: var(--white); text-transform: uppercase; margin-bottom: 10px;
+    }
+    .prod-footer { display: flex; align-items: center; justify-content: space-between; }
+    .prod-price {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px; font-weight: 900; color: var(--white);
+    }
+    .prod-add {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 3px;
+      background: none; border: 1px solid #2a2a2a;
+      color: var(--gray); padding: 7px 14px;
+      cursor: pointer; text-transform: uppercase; transition: all .2s;
+    }
+    .prod-card:hover .prod-add { border-color: var(--red); color: var(--red); }
+
+    /* ════════════════════════════════════════
+       MODAL CARRITO
+    ════════════════════════════════════════ */
+    .cart-modal-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,.7);
+      display: none; align-items: flex-start; justify-content: flex-end;
+    }
+    .cart-modal-overlay.open { display: flex; }
+    .cart-modal {
+      background: var(--black2);
+      width: 420px; height: 100vh;
+      border-left: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      animation: slideIn .3s ease;
+    }
+    @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    .cart-header {
+      padding: 28px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .cart-header h3 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 20px; font-weight: 900; letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+    .cart-close {
+      background: none; border: none;
+      color: var(--gray); font-size: 24px; cursor: pointer;
+      transition: color .2s;
+    }
+    .cart-close:hover { color: var(--white); }
+    .cart-items { flex: 1; overflow-y: auto; padding: 24px 32px; }
+    .cart-empty {
+      text-align: center; padding: 60px 0;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px; letter-spacing: 3px; color: var(--gray);
+      text-transform: uppercase;
+    }
+    .cart-item {
+      display: flex; gap: 16px;
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+    }
+    .cart-item-img {
+      width: 70px; height: 90px;
+      background: var(--black3); flex-shrink: 0;
+      overflow: hidden;
+    }
+    .cart-item-img img { width: 100%; height: 100%; object-fit: cover; }
+    .cart-item-info { flex: 1; }
+    .cart-item-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; margin-bottom: 4px;
+    }
+    .cart-item-meta {
+      font-size: 12px; color: var(--gray); margin-bottom: 10px;
+    }
+    .cart-item-price {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px; font-weight: 900; color: var(--red);
+    }
+    .cart-item-remove {
+      background: none; border: none;
+      color: #444; font-size: 18px; cursor: pointer;
+      align-self: flex-start; margin-top: 2px;
+      transition: color .2s;
+    }
+    .cart-item-remove:hover { color: var(--red); }
+    .cart-footer {
+      padding: 24px 32px;
+      border-top: 1px solid var(--border);
+    }
+    .cart-total-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px;
+    }
+    .cart-total-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px; font-weight: 700; letter-spacing: 4px;
+      color: var(--gray); text-transform: uppercase;
+    }
+    .cart-total-price {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px; font-weight: 900; color: var(--white);
+    }
+    .btn-checkout {
+      width: 100%;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px; font-weight: 700; letter-spacing: 4px;
+      background: var(--red); color: var(--black);
+      border: none; padding: 18px;
+      cursor: pointer; text-transform: uppercase; transition: background .2s;
+    }
+    .btn-checkout:hover { background: #ff1a24; }
+    .cart-note {
+      font-size: 11px; color: var(--gray);
+      text-align: center; margin-top: 12px; letter-spacing: 1px;
+    }
+
+    /* ════════════════════════════════════════
+       MODAL PRODUCTO
+    ════════════════════════════════════════ */
+    .prod-modal-overlay {
+      position: fixed; inset: 0; z-index: 400;
+      background: rgba(0,0,0,.85);
+      display: none; align-items: center; justify-content: center;
+      padding: 40px;
+    }
+    .prod-modal-overlay.open { display: flex; }
+    .prod-modal {
+      background: var(--black2);
+      max-width: 900px; width: 100%;
+      border: 1px solid var(--border);
+      display: grid; grid-template-columns: 1fr 1fr;
+      max-height: 90vh; overflow: hidden;
+      animation: fadeInScale .3s ease;
+    }
+    @keyframes fadeInScale { from { opacity:0; transform:scale(.96); } to { opacity:1; transform:scale(1); } }
+    .prod-modal-img {
+      background: var(--black3);
+      min-height: 500px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; position: relative;
+    }
+    .prod-modal-img img { width: 100%; height: 100%; object-fit: cover; }
+    .prod-modal-close {
+      position: absolute; top: 16px; right: 16px;
+      background: var(--black); border: none;
+      color: var(--gray); font-size: 22px; cursor: pointer;
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      transition: color .2s;
+    }
+    .prod-modal-close:hover { color: var(--white); }
+    .prod-modal-info {
+      padding: 48px 40px;
+      display: flex; flex-direction: column;
+      overflow-y: auto;
+    }
+    .prod-modal-cat {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 5px;
+      color: var(--red); text-transform: uppercase; margin-bottom: 12px;
+    }
+    .prod-modal-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 36px; font-weight: 900;
+      text-transform: uppercase; letter-spacing: -0.5px;
+      line-height: 1; margin-bottom: 16px;
+    }
+    .prod-modal-price {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 28px; font-weight: 900;
+      color: var(--white); margin-bottom: 28px;
+    }
+    .prod-modal-desc {
+      font-size: 13px; color: var(--gray);
+      line-height: 1.8; margin-bottom: 32px;
+    }
+    .size-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 4px;
+      color: var(--gray); text-transform: uppercase; margin-bottom: 12px;
+    }
+    .size-grid {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px;
+    }
+    .size-btn {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px; font-weight: 700; letter-spacing: 2px;
+      background: none; border: 1px solid var(--border);
+      color: var(--gray); padding: 10px 18px;
+      cursor: pointer; text-transform: uppercase; transition: all .2s;
+    }
+    .size-btn:hover, .size-btn.active {
+      border-color: var(--red); color: var(--red);
+    }
+    .btn-add-cart {
+      width: 100%;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px; font-weight: 700; letter-spacing: 4px;
+      background: var(--red); color: var(--black);
+      border: none; padding: 18px;
+      cursor: pointer; text-transform: uppercase; transition: background .2s;
+    }
+    .btn-add-cart:hover { background: #ff1a24; }
+
+    /* ════════════════════════════════════════
+       FEATURE BANNER ROJO
+    ════════════════════════════════════════ */
+    .feat-banner {
+      margin: 0 48px;
+      background: var(--red);
+      display: grid; grid-template-columns: 1fr 1fr;
+      overflow: hidden; border: 1px solid var(--red);
+    }
+    .feat-content {
+      padding: 80px 56px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .feat-eyebrow {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 6px;
+      color: rgba(0,0,0,.5); text-transform: uppercase; margin-bottom: 20px;
+    }
+    .feat-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(48px, 5vw, 80px); font-weight: 900;
+      text-transform: uppercase; letter-spacing: -2px;
+      line-height: .9; color: var(--black); margin-bottom: 24px;
+    }
+    .feat-body {
+      font-size: 14px; color: rgba(0,0,0,.65);
+      line-height: 1.8; max-width: 320px; margin-bottom: 40px;
+    }
+    .btn-black {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px; font-weight: 700; letter-spacing: 4px;
+      background: var(--black); color: var(--white);
+      border: none; padding: 16px 40px; cursor: pointer;
+      text-transform: uppercase; transition: all .2s; align-self: flex-start;
+    }
+    .btn-black:hover { background: #1a1a1a; }
+    .feat-img {
+      background: rgba(0,0,0,.25);
+      display: flex; align-items: center; justify-content: center;
+      min-height: 420px; overflow: hidden;
+    }
+    .feat-img img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* ════════════════════════════════════════
+       SECCIÓN PERSONAJES
+    ════════════════════════════════════════ */
+    .chars-section { padding: 80px 48px; }
+    .chars-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; background: var(--black3);
+      border: 1px solid var(--black3);
+    }
+
+    /* Diablood — negro y rojo */
+    .char-card {
+      padding: 56px 48px;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      min-height: 500px; position: relative; overflow: hidden;
+      cursor: pointer; transition: all .3s;
+    }
+    .char-card-bg {
+      position: absolute; inset: 0; z-index: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .char-card-bg img { width: 100%; height: 100%; object-fit: cover; }
+    .char-card::after {
+      content: ''; position: absolute; inset: 0; z-index: 1;
+      transition: opacity .3s;
+    }
+    .char-diablood { background: var(--black); }
+    .char-diablood::after {
+      background: linear-gradient(to top, rgba(232,0,13,.85) 0%, rgba(8,8,8,.4) 60%, transparent 100%);
+    }
+    .char-kyros { background: #0d0d00; }
+    .char-kyros::after {
+      background: linear-gradient(to top, rgba(245,197,24,.75) 0%, rgba(8,8,8,.4) 60%, transparent 100%);
+    }
+    .char-content { position: relative; z-index: 2; }
+    .char-tag {
+      display: inline-block;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 5px;
+      padding: 6px 14px; text-transform: uppercase; margin-bottom: 16px;
+    }
+    .tag-diablood { background: var(--red); color: var(--black); }
+    .tag-kyros    { background: var(--kyros-yellow); color: var(--black); }
+
+    .char-name {
+      font-family: 'UnifrakturMaguntia', cursive;
+      font-size: 56px; line-height: 1;
+      margin-bottom: 12px;
+    }
+    .char-diablood .char-name { color: var(--white); }
+    .char-kyros   .char-name  { color: var(--kyros-yellow); }
+
+    .char-desc {
+      font-size: 13px; line-height: 1.7;
+      max-width: 300px; margin-bottom: 28px;
+    }
+    .char-diablood .char-desc { color: rgba(255,255,255,.65); }
+    .char-kyros   .char-desc  { color: rgba(245,197,24,.75); }
+
+    .char-btn {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px; font-weight: 700; letter-spacing: 4px;
+      border: none; padding: 13px 32px; cursor: pointer;
+      text-transform: uppercase; transition: all .2s; align-self: flex-start;
+    }
+    .btn-diablood { background: var(--red); color: var(--black); }
+    .btn-diablood:hover { background: #ff1a24; }
+    .btn-kyros    { background: var(--kyros-yellow); color: var(--black); }
+    .btn-kyros:hover { background: #ffd324; }
+
+    /* placeholder personaje */
+    .char-ph {
+      position: absolute; inset: 0; z-index: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 12px;
+    }
+    .char-ph-icon { font-size: 64px; opacity: .08; }
+    .char-ph-text {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; letter-spacing: 5px; color: #1a1a1a;
+      text-transform: uppercase;
+    }
+
+    /* ════════════════════════════════════════
+       CATEGORÍAS
+    ════════════════════════════════════════ */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 1px; background: var(--black3);
+      border: 1px solid var(--black3);
+    }
+    .cat-card {
+      background: var(--black2);
+      display: flex; align-items: flex-end;
+      padding: 28px; cursor: pointer; position: relative;
+      overflow: hidden; transition: background .3s; min-height: 200px;
+    }
+    .cat-card:hover { background: #161616; }
+    .cat-card.big { grid-row: span 2; min-height: 400px; }
+    .cat-num {
+      position: absolute; top: 20px; right: 20px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 4px;
+      color: #222; text-transform: uppercase;
+    }
+    .cat-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 26px; font-weight: 900;
+      text-transform: uppercase; letter-spacing: -.5px;
+      color: var(--white); transition: color .3s;
+    }
+    .cat-card:hover .cat-name { color: var(--red); }
+    .cat-sub {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 4px;
+      color: var(--gray); text-transform: uppercase; margin-top: 4px;
+    }
+    .cat-line {
+      width: 24px; height: 2px; background: var(--red);
+      margin-bottom: 12px; opacity: 0; transition: opacity .3s;
+    }
+    .cat-card:hover .cat-line { opacity: 1; }
+
+    /* ════════════════════════════════════════
+       INSTAGRAM GRID
+    ════════════════════════════════════════ */
+    .insta-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 1px; background: var(--black3);
+      border: 1px solid var(--black3);
+    }
+    .insta-cell {
+      aspect-ratio: 1;
+      background: var(--black2);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; position: relative; overflow: hidden;
+    }
+    .insta-cell img { position: absolute; inset: 0; transition: transform .5s; }
+    .insta-cell:hover img { transform: scale(1.05); }
+    .insta-overlay {
+      position: absolute; inset: 0;
+      background: rgba(232,0,13,0);
+      display: flex; align-items: center; justify-content: center;
+      transition: background .3s;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 4px;
+      color: transparent; text-transform: uppercase; z-index: 2;
+    }
+    .insta-cell:hover .insta-overlay {
+      background: rgba(232,0,13,.75); color: var(--black);
+    }
+
+    /* ════════════════════════════════════════
+       FOOTER
+    ════════════════════════════════════════ */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 72px 48px 48px;
+      display: grid; grid-template-columns: 2.5fr 1fr 1fr 1fr;
+      gap: 48px;
+    }
+    .foot-logo {
+      font-family: 'UnifrakturMaguntia', cursive;
+      font-size: 48px; color: var(--white);
+      display: block; margin-bottom: 20px;
+    }
+    .foot-desc {
+      font-size: 13px; color: var(--gray);
+      line-height: 1.9; max-width: 260px;
+    }
+    .foot-social { display: flex; gap: 12px; margin-top: 24px; }
+    .social-btn {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 3px;
+      border: 1px solid #2a2a2a; color: var(--gray);
+      padding: 8px 16px; cursor: pointer; background: none;
+      text-transform: uppercase; transition: all .2s;
+    }
+    .social-btn:hover { border-color: var(--red); color: var(--red); }
+    .foot-col h5 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 5px;
+      color: var(--red); text-transform: uppercase;
+      margin-bottom: 24px; padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .foot-col ul { list-style: none; }
+    .foot-col li { margin-bottom: 12px; }
+    .foot-col a {
+      font-size: 13px; color: var(--gray);
+      cursor: pointer; transition: color .2s; letter-spacing: .5px;
+    }
+    .foot-col a:hover { color: var(--white); }
+    .foot-bottom {
+      border-top: 1px solid var(--border);
+      margin: 0 48px; padding: 20px 0 24px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .foot-copy {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 4px;
+      color: #333; text-transform: uppercase;
+    }
+
+    /* ════════════════════════════════════════
+       ANIMACIONES
+    ════════════════════════════════════════ */
+    @keyframes marquee {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-left > * { animation: fadeInUp .6s ease both; }
+    .drop-label    { animation-delay: .05s; }
+    .hero-h1       { animation-delay: .15s; }
+    .hero-sub      { animation-delay: .25s; }
+    .hero-actions  { animation-delay: .35s; }
+    .hero-stats    { animation-delay: .45s; }
+
+    /* ════════════════════════════════════════
+       MENÚ HAMBURGUESA (solo celular)
+    ════════════════════════════════════════ */
+    .hamburger {
+      display: none;
+      flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--white); transition: all .3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-menu {
+      display: none;
+      position: fixed; inset: 0; top: 60px; z-index: 190;
+      background: var(--black);
+      flex-direction: column;
+      padding: 40px 32px;
+      border-top: 1px solid var(--border);
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 32px; font-weight: 900; letter-spacing: 2px;
+      color: var(--white); text-transform: uppercase;
+      padding: 16px 0; border-bottom: 1px solid var(--border);
+      transition: color .2s;
+    }
+    .mobile-menu a:hover { color: var(--red); }
+    .mobile-menu-footer {
+      margin-top: auto; padding-top: 32px;
+      display: flex; gap: 12px;
+    }
+
+    /* ════════════════════════════════════════
+       RESPONSIVE — TABLET (max 1024px)
+    ════════════════════════════════════════ */
+    @media (max-width: 1024px) {
+      nav { padding: 0 24px; }
+
+      .nav-center { gap: 20px; }
+      .nav-center a { font-size: 11px; letter-spacing: 2px; }
+
+      .hero { grid-template-columns: 1fr 1fr; min-height: 80vh; }
+      .hero-left { padding: 48px 24px; }
+
+      .section { padding: 60px 24px; }
+      .feat-banner { margin: 0 24px; }
+      .chars-section { padding: 60px 24px; }
+
+      .prod-grid { grid-template-columns: repeat(2, 1fr); }
+
+      footer { padding: 48px 24px 32px; gap: 32px; }
+      .foot-bottom { margin: 0 24px; }
+
+      .cat-grid { grid-template-columns: 1fr 1fr; }
+      .cat-card.big { grid-column: span 2; grid-row: span 1; min-height: 220px; }
+    }
+
+    /* ════════════════════════════════════════
+       RESPONSIVE — CELULAR (max 768px)
+    ════════════════════════════════════════ */
+    @media (max-width: 768px) {
+
+      /* NAV MÓVIL */
+      nav {
+        padding: 0 20px; height: 60px;
+      }
+      .nav-center { display: none; }
+      .nav-btn { display: none; }
+      .hamburger { display: flex; }
+      .logo { font-size: 28px; }
+      .cart-btn {
+        padding: 8px 14px; font-size: 10px; letter-spacing: 2px;
+      }
+
+      /* HERO MÓVIL — apilado verticalmente */
+      .hero {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        min-height: auto;
+      }
+      .hero-left {
+        padding: 48px 20px 40px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .hero-h1 {
+        font-size: clamp(56px, 14vw, 90px);
+        letter-spacing: -1px;
+      }
+      .hero-sub { font-size: 13px; margin: 20px 0 32px; }
+      .hero-actions { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .btn-red, .btn-ghost { width: 100%; text-align: center; padding: 15px 20px; }
+      .hero-stats { gap: 24px; margin-top: 40px; padding-top: 28px; }
+      .stat-num { font-size: 22px; }
+
+      .hero-right {
+        grid-template-rows: 280px 160px;
+      }
+      .hero-img-split { grid-template-columns: 1fr 1fr; }
+
+      /* MARQUEE */
+      .mq-item span { font-size: 11px; letter-spacing: 4px; }
+
+      /* SECCIONES */
+      .section { padding: 48px 20px; }
+      .sec-title { font-size: 36px; }
+      .sec-head { flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 28px; }
+
+      /* PRODUCTOS */
+      .prod-grid { grid-template-columns: repeat(2, 1fr); }
+      .prod-name { font-size: 13px; }
+      .prod-price { font-size: 14px; }
+
+      /* BANNER FEATURE */
+      .feat-banner {
+        margin: 0 20px;
+        grid-template-columns: 1fr;
+      }
+      .feat-img { min-height: 260px; order: -1; }
+      .feat-content { padding: 40px 28px; }
+      .feat-title { font-size: clamp(40px, 10vw, 60px); }
+
+      /* PERSONAJES */
+      .chars-section { padding: 48px 20px; }
+      .chars-grid { grid-template-columns: 1fr; }
+      .char-card { min-height: 400px; }
+      .char-name { font-size: 44px; }
+
+      /* CATEGORÍAS */
+      .cat-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+      }
+      .cat-card.big {
+        grid-column: span 2; grid-row: span 1;
+        min-height: 180px;
+      }
+      .cat-card { min-height: 140px; padding: 20px; }
+      .cat-name { font-size: 20px; }
+
+      /* INSTAGRAM */
+      .insta-grid { grid-template-columns: repeat(3, 1fr); }
+      .insta-grid .insta-cell:nth-child(4),
+      .insta-grid .insta-cell:nth-child(5) { display: none; }
+
+      /* FOOTER */
+      footer {
+        grid-template-columns: 1fr 1fr;
+        padding: 48px 20px 32px; gap: 32px;
+      }
+      .foot-brand { grid-column: span 2; }
+      .foot-logo { font-size: 40px; }
+      .foot-bottom {
+        margin: 0 20px;
+        flex-direction: column; gap: 8px; text-align: center;
+      }
+
+      /* MODAL PRODUCTO — pantalla completa en móvil */
+      .prod-modal {
+        grid-template-columns: 1fr;
+        max-height: 95vh;
+        overflow-y: auto;
+        margin: auto 12px 0;
+        align-self: flex-end;
+      }
+      .prod-modal-img { min-height: 300px; }
+      .prod-modal-info { padding: 28px 24px; }
+      .prod-modal-overlay { align-items: flex-end; padding: 0; }
+
+      /* CARRITO — ancho completo en móvil */
+      .cart-modal { width: 100%; }
+
+      /* CONTACTO */
+      #contacto .btn-red,
+      #contacto .btn-ghost { width: 100%; }
+      #contacto > div > div { flex-direction: column; }
+    }
+
+    /* ════════════════════════════════════════
+       RESPONSIVE — CELULAR PEQUEÑO (max 400px)
+    ════════════════════════════════════════ */
+    @media (max-width: 400px) {
+      .prod-grid { grid-template-columns: 1fr; }
+      .hero-h1 { font-size: 52px; }
+      .ann-item { font-size: 10px; letter-spacing: 3px; }
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     PANTALLA DE ENTRADA — ESTILO NETFLIX
+══════════════════════════════════════ -->
+<div id="intro-screen" onclick="enterSite()">
+
+  <!-- Fondo decorativo -->
+  <div class="intro-lines"></div>
+  <div class="intro-scan"></div>
+  <div class="intro-particles" id="particles"></div>
+
+  <!-- Esquinas -->
+  <div class="intro-corner tl"></div>
+  <div class="intro-corner tr"></div>
+  <div class="intro-corner bl"></div>
+  <div class="intro-corner br"></div>
+
+  <!-- Contenido central -->
+  <div class="intro-content">
+    <div class="intro-logo">Dezster</div>
+    <div class="intro-line"></div>
+    <p class="intro-tagline">Drop Culture · Calama, Chile · 2025</p>
+    <button class="intro-enter" onclick="enterSite()">Entrar →</button>
+  </div>
+
+  <p class="intro-hint">Toca en cualquier lugar para entrar</p>
+</div>
+
+<!-- ══════════════════════════════════════
+     ANNOUNCEMENT BAR
+══════════════════════════════════════ -->
+<div class="ann-bar">
+  <div class="ann-track">
+    <span class="ann-item">✦ Drop 001 disponible ahora</span>
+    <span class="ann-item">✦ Envíos a todo Chile</span>
+    <span class="ann-item">✦ Stock limitado</span>
+    <span class="ann-item">✦ Dezster — Calama, Chile</span>
+    <span class="ann-item">✦ Unisex / Sin límites</span>
+    <span class="ann-item">✦ Drop 001 disponible ahora</span>
+    <span class="ann-item">✦ Envíos a todo Chile</span>
+    <span class="ann-item">✦ Stock limitado</span>
+    <span class="ann-item">✦ Dezster — Calama, Chile</span>
+    <span class="ann-item">✦ Unisex / Sin límites</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     NAV
+══════════════════════════════════════ -->
+<nav>
+  <img src="images/logo-dezter.png" alt="Dezster" style="height:44px;width:auto;object-fit:contain;" />
+
+  <ul class="nav-center">
+    <li><a href="#drops">Drops</a></li>
+    <li><a href="#hombre">Hombre</a></li>
+    <li><a href="#mujer">Mujer</a></li>
+    <li><a href="#personajes">Personajes</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <button class="nav-btn">Buscar</button>
+    <button class="cart-btn" onclick="openCart()">Carrito (<span id="cart-count">0</span>)</button>
+    <!-- BOTÓN HAMBURGUESA — solo visible en celular -->
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MENÚ MÓVIL -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#drops"      onclick="closeMenu()">Drops</a>
+  <a href="#hombre"     onclick="closeMenu()">Hombre</a>
+  <a href="#mujer"      onclick="closeMenu()">Mujer</a>
+  <a href="#personajes" onclick="closeMenu()">Personajes</a>
+  <a href="#contacto"   onclick="closeMenu()">Contacto</a>
+  <div class="mobile-menu-footer">
+    <button class="social-btn" onclick="window.open('https://www.instagram.com/dezsterchile','_blank')">IG</button>
+    <button class="social-btn" onclick="window.open('https://tiktok.com/@dezter','_blank')">TK</button>
+    <button class="social-btn" onclick="window.open('https://wa.me/56966942574','_blank')">WP</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="drop-label">Drop 001 — 2025</p>
+    <h1 class="hero-h1">
+      <span class="outline">No</span><br>
+      <span class="red-word">Rules.</span><br>
+      Dezster.
+    </h1>
+    <p class="hero-sub">
+      Ropa que no pide permiso. Cada pieza es un drop limitado
+      diseñado desde las calles de Calama para el mundo.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-red" onclick="document.getElementById('drops').scrollIntoView({behavior:'smooth'})">
+        Ver Drop 001 →
+      </button>
+      <button class="btn-ghost" onclick="document.getElementById('personajes').scrollIntoView({behavior:'smooth'})">
+        Personajes
+      </button>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">001</div>
+        <div class="stat-label">Drop actual</div>
+      </div>
+      <div>
+        <div class="stat-num">24h</div>
+        <div class="stat-label">Stock disponible</div>
+      </div>
+      <div>
+        <div class="stat-num">CLM</div>
+        <div class="stat-label">Calama, Chile</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-img-main">
+      <img src="images/hero-principal.jpg" alt="Dezster Drop 001" />
+    </div>
+    <div class="hero-img-split">
+      <div class="hero-img-sm">
+        <img src="images/hero-detalle.jpg" alt="Detalle Dezster" />
+      </div>
+      <div class="hero-img-sm">
+        <img src="images/hero-modelo.jpg" alt="Modelo Dezster" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     MARQUEE
+══════════════════════════════════════ -->
+<div class="marquee-bar">
+  <div class="mq-track">
+    <div class="mq-item"><i>✦</i><span>Dezster Calama</span></div>
+    <div class="mq-item"><i>✦</i><span>Drop Culture</span></div>
+    <div class="mq-item"><i>✦</i><span>Stock Limitado</span></div>
+    <div class="mq-item"><i>✦</i><span>Unisex</span></div>
+    <div class="mq-item"><i>✦</i><span>Diablood x Kyros</span></div>
+    <div class="mq-item"><i>✦</i><span>Sin Género</span></div>
+    <div class="mq-item"><i>✦</i><span>Dezster Calama</span></div>
+    <div class="mq-item"><i>✦</i><span>Drop Culture</span></div>
+    <div class="mq-item"><i>✦</i><span>Stock Limitado</span></div>
+    <div class="mq-item"><i>✦</i><span>Unisex</span></div>
+    <div class="mq-item"><i>✦</i><span>Diablood x Kyros</span></div>
+    <div class="mq-item"><i>✦</i><span>Sin Género</span></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PRODUCTOS — DROP 001
+══════════════════════════════════════ -->
+<section class="section" id="drops">
+  <div class="sec-head">
+    <div>
+      <p class="sec-eyebrow">— Drop 001</p>
+      <h2 class="sec-title">Nuevos Lanzamientos</h2>
+    </div>
+    <button class="see-all">Ver Todo →</button>
+  </div>
+
+  <!--
+    ✅ CÓMO AGREGAR UN PRODUCTO:
+    Copia el bloque .prod-card y edita:
+    - data-name="Nombre del producto"
+    - data-price="XX.990"
+    - data-cat="Categoría"
+    - data-desc="Descripción"
+    - La imagen: reemplaza el .ph por <img src="images/producto-X.jpg" alt="..." />
+    - El badge: badge-new (Nuevo), badge-drop (Drop), badge-sold (Agotado)
+  -->
+  <div class="prod-grid">
+
+    <!-- PRODUCTO 1 -->
+    <div class="prod-card"
+         data-name="DZT Void Tee"
+         data-price="24.990"
+         data-cat="Camiseta"
+         data-desc="Camiseta oversize de algodón pesado. Serigrafía exclusiva del Drop 001. Disponible en tallas S al XL."
+         onclick="openProduct(this)">
+      <div class="prod-img">
+        <img src="images/void-tee.jpg" alt="DZT Void Tee" />
+        <div class="prod-badge badge-new">New</div>
+      </div>
+      <div class="prod-info">
+        <p class="prod-cat">Camiseta</p>
+        <p class="prod-name">DZT Void Tee</p>
+        <div class="prod-footer">
+          <span class="prod-price">$24.990</span>
+          <button class="prod-add">+ Ver</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTO 2 -->
+    <div class="prod-card"
+         data-name="DZT Arch Hood"
+         data-price="49.990"
+         data-cat="Hoodie"
+         data-desc="Hoodie de algodón 400g, corte relajado. Logo bordado al pecho. Unisex."
+         onclick="openProduct(this)">
+      <div class="prod-img">
+        <img src="images/arch-hood.jpg" alt="DZT Arch Hood" />
+        <div class="prod-badge badge-drop">Drop</div>
+      </div>
+      <div class="prod-info">
+        <p class="prod-cat">Hoodie</p>
+        <p class="prod-name">DZT Arch Hood</p>
+        <div class="prod-footer">
+          <span class="prod-price">$49.990</span>
+          <button class="prod-add">+ Ver</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTO 3 -->
+    <div class="prod-card"
+         data-name="DZT Cargo 001"
+         data-price="39.990"
+         data-cat="Pantalón"
+         data-desc="Cargo pant con 6 bolsillos. Tela ripstop resistente. Drop exclusivo."
+         onclick="openProduct(this)">
+      <div class="prod-img">
+        <img src="images/cargo-001.jpg" alt="DZT Cargo 001" />
+        <div class="prod-badge badge-new">New</div>
+      </div>
+      <div class="prod-info">
+        <p class="prod-cat">Pantalón</p>
+        <p class="prod-name">DZT Cargo 001</p>
+        <div class="prod-footer">
+          <span class="prod-price">$39.990</span>
+          <button class="prod-add">+ Ver</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTO 4 — AGOTADO -->
+    <div class="prod-card"
+         data-name="DZT Snapback"
+         data-price="14.990"
+         data-cat="Accesorio"
+         data-desc="Snapback bordado con logo Dezster. Edición limitada agotada."
+         onclick="openProduct(this)">
+      <div class="prod-img">
+        <img src="images/snapback.jpg" alt="DZT Snapback" />
+        <div class="prod-badge badge-sold">Sold Out</div>
+      </div>
+      <div class="prod-info">
+        <p class="prod-cat">Accesorio</p>
+        <p class="prod-name">DZT Snapback</p>
+        <div class="prod-footer">
+          <span class="prod-price" style="color:var(--gray)">$14.990</span>
+          <button class="prod-add" style="opacity:.4;cursor:not-allowed">Sold</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     FEATURE BANNER — MANIFIESTO
+══════════════════════════════════════ -->
+<div class="feat-banner">
+  <div class="feat-content">
+    <p class="feat-eyebrow">— Dezster Studio</p>
+    <h2 class="feat-title">No<br>pedimos<br>permiso.</h2>
+    <p class="feat-body">
+      Nacimos en Calama con una idea simple: hacer ropa que se sienta tuya.
+      Sin reglas de género, sin temporadas, solo drops que importan.
+    </p>
+    <button class="btn-black" onclick="window.location.href='historia.html'">Nuestra Historia →</button>
+  </div>
+  <div class="feat-img">
+    <img src="images/editorial.jpg" alt="Dezster Editorial" />
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PERSONAJES — DIABLOOD & KYROS
+══════════════════════════════════════ -->
+<section class="chars-section" id="personajes">
+  <div class="sec-head">
+    <div>
+      <p class="sec-eyebrow">— El Universo Dezster</p>
+      <h2 class="sec-title">Nuestros Personajes</h2>
+    </div>
+  </div>
+
+  <div class="chars-grid">
+
+    <!-- DIABLOOD -->
+    <div class="char-card char-diablood">
+      <div class="char-card-bg">
+        <img src="images/diablood.png" alt="Diablood" />
+      </div>
+      <div class="char-content">
+        <span class="char-tag tag-diablood">Personaje 01</span>
+        <div class="char-name">Diablood</div>
+        <p class="char-desc">
+          La oscuridad hecha estilo. Diablood representa la rebeldía,
+          la noche y la actitud sin filtros de Dezster.
+          Negro y rojo. Sin piedad.
+        </p>
+        <button class="char-btn btn-diablood">Ver Colección Diablood →</button>
+      </div>
+    </div>
+
+    <!-- KYROS -->
+    <div class="char-card char-kyros">
+      <div class="char-card-bg">
+        <img src="images/kyros.png" alt="Kyros" />
+      </div>
+      <div class="char-content">
+        <span class="char-tag tag-kyros">Personaje 02</span>
+        <div class="char-name" style="color:var(--kyros-yellow)">Kyros</div>
+        <p class="char-desc" style="color:rgba(245,197,24,.75)">
+          La luz que corta la oscuridad. Kyros trae caos luminoso,
+          fuerza y energía al universo Dezster.
+          Amarillo y blanco. Sin límites.
+        </p>
+        <button class="char-btn btn-kyros">Ver Colección Kyros →</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     CATEGORÍAS
+══════════════════════════════════════ -->
+<section class="section" id="hombre">
+  <div class="sec-head">
+    <div>
+      <p class="sec-eyebrow">— Explorar</p>
+      <h2 class="sec-title">Categorías</h2>
+    </div>
+    <button class="see-all">Ver Todas →</button>
+  </div>
+  <div class="cat-grid">
+    <div class="cat-card big">
+      <span class="cat-num">01</span>
+      <div>
+        <div class="cat-line"></div>
+        <div class="cat-name">Tops &amp;<br>Camisetas</div>
+        <div class="cat-sub">14 prendas</div>
+      </div>
+    </div>
+    <div class="cat-card">
+      <span class="cat-num">02</span>
+      <div>
+        <div class="cat-line"></div>
+        <div class="cat-name">Bottoms</div>
+        <div class="cat-sub">8 prendas</div>
+      </div>
+    </div>
+    <div class="cat-card">
+      <span class="cat-num">03</span>
+      <div>
+        <div class="cat-line"></div>
+        <div class="cat-name">Hoodies</div>
+        <div class="cat-sub">6 prendas</div>
+      </div>
+    </div>
+    <div class="cat-card">
+      <span class="cat-num">04</span>
+      <div>
+        <div class="cat-line"></div>
+        <div class="cat-name">Outerwear</div>
+        <div class="cat-sub">4 prendas</div>
+      </div>
+    </div>
+    <div class="cat-card">
+      <span class="cat-num">05</span>
+      <div>
+        <div class="cat-line"></div>
+        <div class="cat-name">Accesorios</div>
+        <div class="cat-sub">12 items</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     INSTAGRAM GRID
+══════════════════════════════════════ -->
+<section class="section" style="padding-top:0">
+  <div class="sec-head">
+    <div>
+      <p class="sec-eyebrow">— @dezsterchile</p>
+      <h2 class="sec-title">Síguenos</h2>
+    </div>
+    <button class="see-all">Instagram →</button>
+  </div>
+  <div class="insta-grid">
+    <div class="insta-cell">
+      <img src="images/insta-1.jpg" alt="Dezster Instagram 1" />
+      <div class="insta-overlay">Ver</div>
+    </div>
+    <div class="insta-cell">
+      <img src="images/insta-2.jpg" alt="Dezster Instagram 2" />
+      <div class="insta-overlay">Ver</div>
+    </div>
+    <div class="insta-cell">
+      <img src="images/insta-3.jpg" alt="Dezster Instagram 3" />
+      <div class="insta-overlay">Ver</div>
+    </div>
+    <div class="insta-cell">
+      <img src="images/insta-4.jpg" alt="Dezster Instagram 4" />
+      <div class="insta-overlay">Ver</div>
+    </div>
+    <div class="insta-cell">
+      <img src="images/insta-5.jpg" alt="Dezster Instagram 5" />
+      <div class="insta-overlay">Ver</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     CONTACTO
+══════════════════════════════════════ -->
+<section class="section" id="contacto" style="border-top:1px solid var(--border)">
+  <div style="max-width:600px;margin:0 auto;text-align:center">
+    <p class="sec-eyebrow" style="text-align:center">— Contáctanos</p>
+    <h2 class="sec-title" style="margin-bottom:16px">Hablemos</h2>
+    <p style="font-size:14px;color:var(--gray);line-height:1.8;margin-bottom:48px">
+      ¿Consultas sobre pedidos, tallas o colabs? Escríbenos directamente.
+      Respondemos por WhatsApp e Instagram.
+    </p>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+      <!--
+        ✅ REEMPLAZA el # con tu número y usuario reales:
+        WhatsApp: https://wa.me/56912345678
+        Instagram: https://instagram.com/dezter.cl
+      -->
+      <a href="https://wa.me/56966942574" target="_blank">
+        <button class="btn-red">WhatsApp →</button>
+      </a>
+      <a href="https://www.instagram.com/dezsterchile" target="_blank">
+        <button class="btn-ghost">Instagram →</button>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     FOOTER
+══════════════════════════════════════ -->
+<footer>
+  <div>
+    <span class="foot-logo">Dezster</span>
+    <p class="foot-desc">
+      Drop culture desde Calama. Ropa sin género para quienes rompen las reglas.
+    </p>
+    <div class="foot-social">
+      <button class="social-btn" onclick="window.open('https://www.instagram.com/dezsterchile','_blank')">IG</button>
+      <button class="social-btn" onclick="window.open('https://tiktok.com/@dezter','_blank')">TK</button>
+      <button class="social-btn" onclick="window.open('https://wa.me/56966942574','_blank')">WP</button>
+    </div>
+  </div>
+  <div class="foot-col">
+    <h5>Tienda</h5>
+    <ul>
+      <li><a href="#drops">Drops</a></li>
+      <li><a href="#hombre">Hombre</a></li>
+      <li><a href="#mujer">Mujer</a></li>
+      <li><a href="#personajes">Personajes</a></li>
+    </ul>
+  </div>
+  <div class="foot-col">
+    <h5>Ayuda</h5>
+    <ul>
+      <li><a href="#contacto">Envíos</a></li>
+      <li><a href="#contacto">Cambios</a></li>
+      <li><a href="#contacto">Guía de Tallas</a></li>
+      <li><a href="#contacto">Preguntas Frecuentes</a></li>
+    </ul>
+  </div>
+  <div class="foot-col">
+    <h5>Dezster</h5>
+    <ul>
+      <li><a href="#contacto">Nuestra Historia</a></li>
+      <li><a href="#personajes">Diablood</a></li>
+      <li><a href="#personajes">Kyros</a></li>
+      <li><a href="#contacto">Trabaja con nosotros</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="foot-bottom">
+  <span class="foot-copy">© 2025 Dezster — Todos los derechos reservados</span>
+  <span class="foot-copy">Calama, Chile</span>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL: VER PRODUCTO
+══════════════════════════════════════ -->
+<div class="prod-modal-overlay" id="prod-modal" onclick="closeProdModal(event)">
+  <div class="prod-modal">
+    <div class="prod-modal-img" id="modal-img">
+      <div class="ph" id="modal-ph">
+        <svg class="ph-icon" width="64" height="64" viewBox="0 0 64 64" fill="none">
+          <rect x="8" y="8" width="48" height="48" stroke="#E8000D" stroke-width="1"/>
+        </svg>
+        <span>Foto del producto</span>
+      </div>
+      <button class="prod-modal-close" onclick="document.getElementById('prod-modal').classList.remove('open')">✕</button>
+    </div>
+    <div class="prod-modal-info">
+      <p class="prod-modal-cat" id="modal-cat">Categoría</p>
+      <h2 class="prod-modal-name" id="modal-name">Nombre Producto</h2>
+      <p class="prod-modal-price" id="modal-price">$00.000</p>
+      <p class="prod-modal-desc" id="modal-desc">Descripción del producto.</p>
+      <p class="size-label">Selecciona tu talla</p>
+      <div class="size-grid">
+        <button class="size-btn" onclick="selectSize(this)">XS</button>
+        <button class="size-btn" onclick="selectSize(this)">S</button>
+        <button class="size-btn" onclick="selectSize(this)">M</button>
+        <button class="size-btn" onclick="selectSize(this)">L</button>
+        <button class="size-btn" onclick="selectSize(this)">XL</button>
+      </div>
+      <button class="btn-add-cart" onclick="addToCart()">Agregar al Carrito →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL: CARRITO
+══════════════════════════════════════ -->
+<div class="cart-modal-overlay" id="cart-modal" onclick="closeCartModal(event)">
+  <div class="cart-modal">
+    <div class="cart-header">
+      <h3>Tu Carrito</h3>
+      <button class="cart-close" onclick="closeCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cart-items">
+      <div class="cart-empty" id="cart-empty">Tu carrito está vacío</div>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total-row">
+        <span class="cart-total-label">Total</span>
+        <span class="cart-total-price">$<span id="cart-total">0</span></span>
+      </div>
+      <!--
+        ✅ PAGO:
+        Por ahora el botón muestra un mensaje.
+        Cuando tengas una cuenta en Khipu, Flow, o Webpay,
+        reemplaza el onclick con el enlace de pago real.
+      -->
+      <button class="btn-checkout" onclick="checkout()">Finalizar Compra →</button>
+      <p class="cart-note">
+        Pago 100% seguro con Webpay, débito y crédito vía Flow.cl
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT — CARRITO Y MODALES
+══════════════════════════════════════ -->
+<script>
+  /* ══════════════════════════════════════
+     PANTALLA DE ENTRADA
+  ══════════════════════════════════════ */
+  function enterSite() {
+    const intro = document.getElementById('intro-screen');
+    intro.classList.add('hide');
+    setTimeout(() => {
+      intro.style.display = 'none';
+      document.body.style.overflow = '';
+    }, 1000);
+  }
+
+  /* Crear partículas flotantes */
+  (function createParticles() {
+    const container = document.getElementById('particles');
+    if (!container) return;
+    for (let i = 0; i < 18; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const size = Math.random() * 6 + 2;
+      p.style.cssText = `
+        width:${size}px; height:${size}px;
+        left:${Math.random() * 100}%;
+        animation-duration:${Math.random() * 12 + 8}s;
+        animation-delay:${Math.random() * 6}s;
+      `;
+      container.appendChild(p);
+    }
+  })();
+
+  /* Bloquear scroll mientras intro está visible */
+  document.body.style.overflow = 'hidden';
+
+  /* ── MENÚ HAMBURGUESA ── */
+  function toggleMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const btn  = document.getElementById('hamburger');
+    menu.classList.toggle('open');
+    btn.classList.toggle('open');
+    document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+  }
+  function closeMenu() {
+    document.getElementById('mobile-menu').classList.remove('open');
+    document.getElementById('hamburger').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  /* ── ESTADO DEL CARRITO ── */
+  let cart = [];
+  let currentProduct = null;
+  let selectedSize = null;
+
+  /* ── ABRIR MODAL PRODUCTO ── */
+  function openProduct(card) {
+    currentProduct = {
+      name:  card.dataset.name,
+      price: card.dataset.price,
+      cat:   card.dataset.cat,
+      desc:  card.dataset.desc,
     };
+    selectedSize = null;
 
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', chunk => { data += chunk; });
-      res.on('end', () => {
-        try { resolve(JSON.parse(data)); }
-        catch (e) { reject(new Error('Respuesta inválida de Flow: ' + data)); }
-      });
+    document.getElementById('modal-name').textContent  = currentProduct.name;
+    document.getElementById('modal-price').textContent = '$' + currentProduct.price;
+    document.getElementById('modal-cat').textContent   = currentProduct.cat;
+    document.getElementById('modal-desc').textContent  = currentProduct.desc;
+
+    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('prod-modal').classList.add('open');
+  }
+
+  function closeProdModal(e) {
+    if (e.target === document.getElementById('prod-modal')) {
+      document.getElementById('prod-modal').classList.remove('open');
+    }
+  }
+
+  /* ── SELECCIONAR TALLA ── */
+  function selectSize(btn) {
+    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedSize = btn.textContent;
+  }
+
+  /* ── AGREGAR AL CARRITO ── */
+  function addToCart() {
+    if (!selectedSize) {
+      alert('Selecciona una talla primero.');
+      return;
+    }
+    cart.push({ ...currentProduct, size: selectedSize, id: Date.now() });
+    document.getElementById('prod-modal').classList.remove('open');
+    updateCart();
+    openCart();
+  }
+
+  /* ── ACTUALIZAR CARRITO ── */
+  function updateCart() {
+    const count = cart.length;
+    document.getElementById('cart-count').textContent = count;
+
+    const container = document.getElementById('cart-items');
+    const empty     = document.getElementById('cart-empty');
+
+    if (count === 0) {
+      empty.style.display = 'block';
+      container.querySelectorAll('.cart-item').forEach(el => el.remove());
+      document.getElementById('cart-total').textContent = '0';
+      return;
+    }
+
+    empty.style.display = 'none';
+    container.querySelectorAll('.cart-item').forEach(el => el.remove());
+
+    let total = 0;
+    cart.forEach(item => {
+      const price = parseInt(item.price.replace('.', ''));
+      total += price;
+      const el = document.createElement('div');
+      el.className = 'cart-item';
+      el.innerHTML = `
+        <div class="cart-item-img">
+          <div class="ph" style="min-height:90px">
+            <svg width="24" height="24" viewBox="0 0 40 40" fill="none" style="opacity:.1">
+              <path d="M8 14h24v18H8z" stroke="#E8000D" stroke-width="1"/>
+              <path d="M14 14v-6h12v6" stroke="#E8000D" stroke-width="1"/>
+            </svg>
+          </div>
+        </div>
+        <div class="cart-item-info">
+          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-item-meta">${item.cat} · Talla ${item.size}</div>
+          <div class="cart-item-price">$${item.price}</div>
+        </div>
+        <button class="cart-item-remove" onclick="removeItem(${item.id})">✕</button>
+      `;
+      container.appendChild(el);
     });
 
-    req.on('error', reject);
-    req.write(body);
-    req.end();
-  });
-}
-
-// ════════════════════════════════════════════════════════
-//  HANDLER PRINCIPAL
-// ════════════════════════════════════════════════════════
-exports.handler = async (event) => {
-
-  // Solo POST
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Método no permitido' };
+    const formatted = total.toLocaleString('es-CL');
+    document.getElementById('cart-total').textContent = formatted;
   }
 
-  // Headers CORS
-  const headers = {
-    'Access-Control-Allow-Origin':  '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Content-Type': 'application/json',
-  };
-
-  // Preflight
-  if (event.httpMethod === 'OPTIONS') {
-    return { statusCode: 200, headers, body: '' };
+  /* ── ELIMINAR ITEM ── */
+  function removeItem(id) {
+    cart = cart.filter(i => i.id !== id);
+    updateCart();
   }
 
-  try {
-    // ── Leer datos del carrito enviados desde el HTML ──
-    const { items, email, nombre } = JSON.parse(event.body || '{}');
+  /* ── ABRIR / CERRAR CARRITO ── */
+  function openCart() {
+    document.getElementById('cart-modal').classList.add('open');
+  }
+  function closeCart() {
+    document.getElementById('cart-modal').classList.remove('open');
+  }
+  function closeCartModal(e) {
+    if (e.target === document.getElementById('cart-modal')) closeCart();
+  }
 
-    if (!items || items.length === 0) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: 'Carrito vacío' }),
-      };
+  /* ── CHECKOUT CON FLOW ── */
+  async function checkout() {
+    if (cart.length === 0) {
+      alert('Tu carrito está vacío.');
+      return;
     }
 
-    // ── Calcular total en CLP (entero, sin decimales) ──
-    // Los precios vienen como "24.990" (string chileno) → convertir a número
-    const total = items.reduce((sum, item) => {
-      const precio = parseInt(String(item.price).replace(/\./g, ''), 10);
-      return sum + precio;
-    }, 0);
-
-    // Flow requiere mínimo $350 CLP
-    if (total < 350) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: 'El monto mínimo es $350 CLP' }),
-      };
+    // Pedir email al cliente
+    const email = prompt('Ingresa tu email para el comprobante de pago:');
+    if (!email || !email.includes('@')) {
+      alert('Por favor ingresa un email válido.');
+      return;
     }
 
-    // ── Construir descripción del pedido ──
-    const descripcion = items
-      .map(i => `${i.name} (Talla ${i.size})`)
-      .join(' + ');
+    // Mostrar loading en el botón
+    const btn = document.querySelector('.btn-checkout');
+    const textoOriginal = btn.textContent;
+    btn.textContent = 'Procesando...';
+    btn.disabled = true;
 
-    // ── ID único de orden ──
-    const comercioOrden = 'DZS-' + Date.now();
-
-    // ── URL base del sitio (donde está alojado) ──
-    const siteUrl = process.env.SITE_URL || 'https://lustrous-kitten-2fc51b.netlify.app';
-
-    // ── Parámetros para Flow payment/create ──
-    const params = {
-      commerceOrder: comercioOrden,
-      subject:       'Pedido Dezster Chile',
-      currency:      'CLP',
-      amount:        String(total),
-      email:         email || 'cliente@dezsterchile.cl',
-      paymentMethod: '9',          // 9 = todos los métodos (Webpay, débito, etc.)
-      urlConfirmation: siteUrl + '/.netlify/functions/confirmar-pago',
-      urlReturn:       siteUrl + '/gracias.html',
-      optional: JSON.stringify({
-        nombre:      nombre || 'Cliente',
-        productos:   descripcion,
-        whatsapp:    '56966942574',
-      }),
-    };
-
-    // ── Llamar a Flow ──
-    const respuesta = await llamarFlow('payment/create', params);
-
-    if (!respuesta.url || !respuesta.token) {
-      console.error('Error Flow:', respuesta);
-      return {
-        statusCode: 500,
-        headers,
+    try {
+      // Llamar a la Netlify Function que habla con Flow
+      const respuesta = await fetch('/.netlify/functions/crear-pago', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          error: 'Error al crear el pago en Flow',
-          detalle: respuesta,
+          items:  cart,
+          email:  email,
+          nombre: email.split('@')[0],
         }),
-      };
+      });
+
+      const datos = await respuesta.json();
+
+      if (datos.urlPago) {
+        // Redirigir directo a la página de pago de Flow
+        // Flow mostrará la pantalla de pago con el monto exacto
+        window.location.href = datos.urlPago;
+      } else {
+        throw new Error(datos.error || 'No se pudo crear el pago');
+      }
+
+    } catch (err) {
+      console.error('Error checkout:', err);
+      btn.textContent = textoOriginal;
+      btn.disabled = false;
+      alert('Hubo un problema al procesar el pago. Intenta de nuevo o contáctanos por WhatsApp.');
     }
-
-    // ── Devolver URL de pago al navegador ──
-    // El cliente será redirigido a esta URL para pagar
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({
-        urlPago: respuesta.url + '?token=' + respuesta.token,
-        orden:   comercioOrden,
-        total:   total,
-      }),
-    };
-
-  } catch (err) {
-    console.error('Error interno:', err);
-    return {
-      statusCode: 500,
-      headers,
-      body: JSON.stringify({ error: 'Error interno del servidor', detalle: err.message }),
-    };
   }
-};
+</script>
+
+</body>
+</html>
