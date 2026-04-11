@@ -7,28 +7,22 @@ const crypto = require('crypto');
 const https  = require('https');
 const qs     = require('querystring');
 
-// ── Claves Flow (variables de entorno en Netlify) ──
 const FLOW_API_KEY    = process.env.FLOW_API_KEY;
 const FLOW_SECRET_KEY = process.env.FLOW_SECRET_KEY;
-const FLOW_API_URL    = 'https://www.flow.cl/api';
 
-// ── Firma requerida por Flow ──
+// ── Firma HMAC-SHA256 requerida por Flow ──
 function firmar(params, secretKey) {
-  // Ordenar parámetros alfabéticamente
-  const keys = Object.keys(params).sort();
-  let cadena = '';
+  const keys   = Object.keys(params).sort();
+  let   cadena = '';
   keys.forEach(k => { cadena += k + params[k]; });
-  return crypto
-    .createHmac('sha256', secretKey)
-    .update(cadena)
-    .digest('hex');
+  return crypto.createHmac('sha256', secretKey).update(cadena).digest('hex');
 }
 
-// ── Llamada HTTPS a Flow ──
+// ── Llamada POST a la API de Flow ──
 function llamarFlow(endpoint, params) {
   return new Promise((resolve, reject) => {
-    params.apiKey    = FLOW_API_KEY;
-    params.s         = firmar(params, FLOW_SECRET_KEY);
+    params.apiKey = FLOW_API_KEY;
+    params.s      = firmar(params, FLOW_SECRET_KEY);
 
     const body = qs.stringify(params);
 
@@ -46,129 +40,134 @@ function llamarFlow(endpoint, params) {
       let data = '';
       res.on('data', chunk => { data += chunk; });
       res.on('end', () => {
-        try { resolve(JSON.parse(data)); }
-        catch (e) { reject(new Error('Respuesta inválida de Flow: ' + data)); }
+        console.log('Flow respuesta raw:', data);
+        try {
+          resolve(JSON.parse(data));
+        } catch (e) {
+          reject(new Error('Flow respuesta no es JSON: ' + data));
+        }
       });
     });
 
-    req.on('error', reject);
+    req.on('error', (err) => {
+      console.error('Error conexion Flow:', err.message);
+      reject(err);
+    });
+
     req.write(body);
     req.end();
   });
 }
 
-// ════════════════════════════════════════════════════════
-//  HANDLER PRINCIPAL
-// ════════════════════════════════════════════════════════
 exports.handler = async (event) => {
 
-  // Solo POST
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Método no permitido' };
-  }
-
-  // Headers CORS
   const headers = {
     'Access-Control-Allow-Origin':  '*',
     'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Content-Type': 'application/json',
   };
 
-  // Preflight
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 200, headers, body: '' };
   }
 
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, headers, body: JSON.stringify({ error: 'Metodo no permitido' }) };
+  }
+
+  if (!FLOW_API_KEY || !FLOW_SECRET_KEY) {
+    console.error('FALTAN VARIABLES DE ENTORNO: FLOW_API_KEY o FLOW_SECRET_KEY');
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ error: 'Configuracion incompleta: faltan claves de Flow' }),
+    };
+  }
+
   try {
-    // ── Leer datos del carrito enviados desde el HTML ──
-    const { items, email, nombre, envio } = JSON.parse(event.body || '{}');
+    const body = JSON.parse(event.body || '{}');
+    const { items, email, nombre, envio } = body;
+
+    console.log('Items recibidos:', JSON.stringify(items));
+    console.log('Email:', email);
 
     if (!items || items.length === 0) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: 'Carrito vacío' }),
-      };
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Carrito vacio' }) };
     }
 
-    // ── Calcular total en CLP (entero, sin decimales) ──
-    // Los precios vienen como "24.990" (string chileno) → convertir a número
     const total = items.reduce((sum, item) => {
       const precio = parseInt(String(item.price).replace(/\./g, ''), 10);
       return sum + precio;
     }, 0);
 
-    // Flow requiere mínimo $350 CLP
+    console.log('Total CLP:', total);
+
     if (total < 350) {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Monto minimo es $350 CLP' }) };
+    }
+
+    const descripcion = items
+      .map(i => i.name + ' T:' + i.size)
+      .join(', ')
+      .substring(0, 200);
+
+    const comercioOrden = 'DZS-' + Date.now();
+    const siteUrl = process.env.SITE_URL || 'https://lustrous-kitten-2fc51b.netlify.app';
+
+    const params = {
+      commerceOrder:   comercioOrden,
+      subject:         'Pedido Dezster Chile',
+      currency:        'CLP',
+      amount:          String(total),
+      email:           email || 'cliente@dezsterchile.cl',
+      paymentMethod:   '9',
+      urlConfirmation: siteUrl + '/.netlify/functions/confirmar-pago',
+      urlReturn:       siteUrl + '/gracias.html',
+    };
+
+    console.log('Params enviados a Flow:', JSON.stringify(params));
+
+    const respuesta = await llamarFlow('payment/create', params);
+
+    console.log('Respuesta completa Flow:', JSON.stringify(respuesta));
+
+    if (respuesta.code) {
+      console.error('Flow codigo error:', respuesta.code, respuesta.message);
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: 'El monto mínimo es $350 CLP' }),
-      };
-    }
-
-    // ── Construir descripción del pedido ──
-    const descripcion = items
-      .map(i => `${i.name} (Talla ${i.size})`)
-      .join(' + ');
-
-    // ── ID único de orden ──
-    const comercioOrden = 'DZS-' + Date.now();
-
-    // ── URL base del sitio (donde está alojado) ──
-    const siteUrl = process.env.SITE_URL || 'https://lustrous-kitten-2fc51b.netlify.app';
-
-    // ── Parámetros para Flow payment/create ──
-    const params = {
-      commerceOrder: comercioOrden,
-      subject:       'Pedido Dezster Chile',
-      currency:      'CLP',
-      amount:        String(total),
-      email:         email || 'cliente@dezsterchile.cl',
-      paymentMethod: '9',          // 9 = todos los métodos (Webpay, débito, etc.)
-      urlConfirmation: siteUrl + '/.netlify/functions/confirmar-pago',
-      urlReturn:       siteUrl + '/gracias.html',
-      optional: JSON.stringify({
-        nombre:    nombre || 'Cliente',
-        productos: descripcion,
-        whatsapp:  '56966942574',
-        envio:     envio || {},
-      }),
-    };
-
-    // ── Llamar a Flow ──
-    const respuesta = await llamarFlow('payment/create', params);
-
-    if (!respuesta.url || !respuesta.token) {
-      console.error('Error Flow:', respuesta);
-      return {
-        statusCode: 500,
-        headers,
         body: JSON.stringify({
-          error: 'Error al crear el pago en Flow',
-          detalle: respuesta,
+          error: 'Flow rechazo: ' + (respuesta.message || 'Error ' + respuesta.code),
+          codigo: respuesta.code,
         }),
       };
     }
 
-    // ── Devolver URL de pago al navegador ──
-    // El cliente será redirigido a esta URL para pagar
+    if (!respuesta.url || !respuesta.token) {
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ error: 'Flow no devolvio URL de pago', detalle: respuesta }),
+      };
+    }
+
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         urlPago: respuesta.url + '?token=' + respuesta.token,
         orden:   comercioOrden,
-        total:   total,
+        total,
       }),
     };
 
   } catch (err) {
-    console.error('Error interno:', err);
+    console.error('Error interno:', err.message);
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: 'Error interno del servidor', detalle: err.message }),
+      body: JSON.stringify({ error: 'Error interno: ' + err.message }),
     };
   }
 };
