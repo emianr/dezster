@@ -500,6 +500,171 @@
     .prod-card:hover .prod-add { border-color: var(--red); color: var(--red); }
 
     /* ════════════════════════════════════════
+       MODAL FORMULARIO DE COMPRA
+    ════════════════════════════════════════ */
+    .checkout-overlay {
+      position: fixed; inset: 0; z-index: 600;
+      background: rgba(0,0,0,.85);
+      display: none; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .checkout-overlay.open { display: flex; }
+    .checkout-modal {
+      background: var(--black2);
+      width: 100%; max-width: 560px;
+      max-height: 92vh; overflow-y: auto;
+      border: 1px solid var(--border);
+      animation: slideInUp .3s ease;
+      position: relative;
+    }
+    @keyframes slideInUp {
+      from { opacity:0; transform: translateY(30px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+    .co-header {
+      padding: 24px 28px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; background: var(--black2); z-index: 2;
+    }
+    .co-header h3 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px; font-weight: 900; letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    .co-steps {
+      display: flex; gap: 0;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    .co-step {
+      padding: 4px 12px; color: var(--gray);
+      border: 1px solid var(--border);
+    }
+    .co-step.active { background: var(--red); color: var(--black); border-color: var(--red); }
+    .co-step.done   { color: var(--white); border-color: #2a2a2a; }
+    .co-close {
+      background: none; border: none; color: var(--gray);
+      font-size: 20px; cursor: pointer; transition: color .2s;
+    }
+    .co-close:hover { color: var(--white); }
+
+    .co-body { padding: 28px; }
+
+    /* Sección del formulario */
+    .co-section { margin-bottom: 28px; }
+    .co-section-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 5px;
+      color: var(--red); text-transform: uppercase;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Campos del formulario */
+    .co-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .co-row.full { grid-template-columns: 1fr; }
+    .co-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+    .co-field label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 3px;
+      color: var(--gray); text-transform: uppercase;
+    }
+    .co-field label span { color: var(--red); margin-left: 2px; }
+    .co-field input,
+    .co-field select,
+    .co-field textarea {
+      background: var(--black3);
+      border: 1px solid var(--border);
+      color: var(--white);
+      font-family: 'Barlow', sans-serif;
+      font-size: 14px; padding: 12px 14px;
+      outline: none; transition: border-color .2s;
+      width: 100%;
+    }
+    .co-field input:focus,
+    .co-field select:focus,
+    .co-field textarea:focus { border-color: var(--red); }
+    .co-field input::placeholder,
+    .co-field textarea::placeholder { color: #444; }
+    .co-field select { appearance: none; cursor: pointer; }
+    .co-field select option { background: var(--black2); }
+    .co-field textarea { resize: vertical; min-height: 80px; }
+    .co-field .field-hint {
+      font-size: 11px; color: #444; margin-top: 2px;
+    }
+
+    /* Resumen del pedido dentro del formulario */
+    .co-resumen {
+      background: var(--black);
+      border: 1px solid var(--border);
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .co-resumen-item {
+      display: flex; justify-content: space-between;
+      align-items: center; padding: 8px 0;
+      border-bottom: 1px solid #1a1a1a;
+      font-size: 13px;
+    }
+    .co-resumen-item:last-child { border-bottom: none; }
+    .co-resumen-item .item-name { color: var(--white); }
+    .co-resumen-item .item-meta { font-size: 11px; color: var(--gray); margin-top: 2px; }
+    .co-resumen-item .item-price {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px; font-weight: 900; color: var(--white);
+    }
+    .co-total-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 14px; margin-top: 4px;
+      border-top: 1px solid var(--border);
+    }
+    .co-total-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 4px;
+      color: var(--gray); text-transform: uppercase;
+    }
+    .co-total-price {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px; font-weight: 900; color: var(--red);
+    }
+
+    /* Botón pagar */
+    .co-btn-pagar {
+      width: 100%;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px; font-weight: 700; letter-spacing: 4px;
+      background: var(--red); color: var(--black);
+      border: none; padding: 18px;
+      cursor: pointer; text-transform: uppercase;
+      transition: background .2s; margin-top: 8px;
+    }
+    .co-btn-pagar:hover:not(:disabled) { background: #ff1a24; }
+    .co-btn-pagar:disabled { opacity: .6; cursor: not-allowed; }
+    .co-seguro {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 12px;
+      font-size: 11px; color: var(--gray); letter-spacing: 1px;
+    }
+    .co-error {
+      background: rgba(232,0,13,.1);
+      border: 1px solid rgba(232,0,13,.3);
+      color: #ff6b6b; padding: 12px 16px;
+      font-size: 13px; margin-bottom: 16px;
+      display: none;
+    }
+    .co-error.show { display: block; }
+
+    /* Responsive del formulario */
+    @media (max-width: 600px) {
+      .co-row { grid-template-columns: 1fr; }
+      .co-body { padding: 20px; }
+      .co-steps { display: none; }
+    }
+
+    /* ════════════════════════════════════════
        MODAL CARRITO
     ════════════════════════════════════════ */
     .cart-modal-overlay {
@@ -1687,6 +1852,155 @@
 </div>
 
 <!-- ══════════════════════════════════════
+     MODAL: FORMULARIO DE COMPRA COMPLETO
+══════════════════════════════════════ -->
+<div class="checkout-overlay" id="checkout-form-modal" onclick="closeCheckoutForm(event)">
+  <div class="checkout-modal">
+
+    <!-- HEADER -->
+    <div class="co-header">
+      <h3>Finalizar Compra</h3>
+      <div style="display:flex;align-items:center;gap:16px">
+        <div class="co-steps">
+          <span class="co-step active" id="step-label">Datos</span>
+          <span class="co-step" id="step-pago-label">Pago</span>
+        </div>
+        <button class="co-close" onclick="closeCheckoutFormBtn()">✕</button>
+      </div>
+    </div>
+
+    <div class="co-body">
+
+      <!-- ERROR -->
+      <div class="co-error" id="co-error-msg"></div>
+
+      <!-- RESUMEN DEL PEDIDO -->
+      <div class="co-section">
+        <div class="co-section-title">Tu Pedido</div>
+        <div class="co-resumen">
+          <div id="co-items-lista"></div>
+          <div class="co-total-row">
+            <span class="co-total-label">Total a pagar</span>
+            <span class="co-total-price">$<span id="co-total-monto">0</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DATOS PERSONALES -->
+      <div class="co-section">
+        <div class="co-section-title">Datos Personales</div>
+        <div class="co-row">
+          <div class="co-field">
+            <label>Nombre <span>*</span></label>
+            <input type="text" id="co-nombre" placeholder="Tu nombre" autocomplete="given-name" />
+          </div>
+          <div class="co-field">
+            <label>Apellido <span>*</span></label>
+            <input type="text" id="co-apellido" placeholder="Tu apellido" autocomplete="family-name" />
+          </div>
+        </div>
+        <div class="co-field">
+          <label>Correo Electrónico <span>*</span></label>
+          <input type="email" id="co-email" placeholder="tucorreo@gmail.com" autocomplete="email" />
+          <span class="field-hint" style="font-size:11px;color:#444;margin-top:4px">Flow enviará tu comprobante de pago a este correo</span>
+        </div>
+        <div class="co-field">
+          <label>Teléfono / WhatsApp <span>*</span></label>
+          <input type="tel" id="co-telefono" placeholder="+56 9 XXXX XXXX" autocomplete="tel" />
+          <span class="field-hint" style="font-size:11px;color:#444;margin-top:4px">Te contactaremos por WhatsApp para coordinar el envío</span>
+        </div>
+        <div class="co-field">
+          <label>RUT (opcional)</label>
+          <input type="text" id="co-rut" placeholder="12.345.678-9" />
+          <span class="field-hint" style="font-size:11px;color:#444;margin-top:4px">Solo si necesitas boleta o factura</span>
+        </div>
+      </div>
+
+      <!-- DATOS DE ENVÍO -->
+      <div class="co-section">
+        <div class="co-section-title">Dirección de Envío</div>
+        <div class="co-field">
+          <label>Región <span>*</span></label>
+          <select id="co-region">
+            <option value="">— Selecciona tu región —</option>
+            <option value="Arica y Parinacota">Arica y Parinacota</option>
+            <option value="Tarapacá">Tarapacá</option>
+            <option value="Antofagasta" selected>Antofagasta</option>
+            <option value="Atacama">Atacama</option>
+            <option value="Coquimbo">Coquimbo</option>
+            <option value="Valparaíso">Valparaíso</option>
+            <option value="Metropolitana">Metropolitana (Santiago)</option>
+            <option value="O'Higgins">O'Higgins</option>
+            <option value="Maule">Maule</option>
+            <option value="Ñuble">Ñuble</option>
+            <option value="Biobío">Biobío</option>
+            <option value="La Araucanía">La Araucanía</option>
+            <option value="Los Ríos">Los Ríos</option>
+            <option value="Los Lagos">Los Lagos</option>
+            <option value="Aysén">Aysén</option>
+            <option value="Magallanes">Magallanes</option>
+          </select>
+        </div>
+        <div class="co-row">
+          <div class="co-field">
+            <label>Ciudad / Comuna <span>*</span></label>
+            <input type="text" id="co-ciudad" placeholder="Ej: Calama" autocomplete="address-level2" />
+          </div>
+          <div class="co-field">
+            <label>Código Postal</label>
+            <input type="text" id="co-cp" placeholder="Ej: 1390000" autocomplete="postal-code" />
+          </div>
+        </div>
+        <div class="co-field">
+          <label>Calle y Número <span>*</span></label>
+          <input type="text" id="co-calle" placeholder="Ej: Av. Balmaceda 1234" autocomplete="street-address" />
+        </div>
+        <div class="co-field">
+          <label>Departamento / Casa / Block (opcional)</label>
+          <input type="text" id="co-depto" placeholder="Ej: Depto 502, Casa B" />
+        </div>
+      </div>
+
+      <!-- NOTAS ADICIONALES -->
+      <div class="co-section">
+        <div class="co-section-title">Notas del Pedido</div>
+        <div class="co-field">
+          <label>Comentarios o instrucciones especiales (opcional)</label>
+          <textarea id="co-notas" placeholder="Ej: Dejar con el conserje, horario de entrega preferido, etc."></textarea>
+        </div>
+      </div>
+
+      <!-- MÉTODO DE PAGO INFO -->
+      <div class="co-section">
+        <div class="co-section-title">Método de Pago</div>
+        <div style="background:var(--black);border:1px solid var(--border);padding:16px;margin-bottom:4px">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+            <div style="width:12px;height:12px;background:var(--red);border-radius:50%;flex-shrink:0"></div>
+            <span style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase">Pago seguro con Flow.cl</span>
+          </div>
+          <p style="font-size:12px;color:var(--gray);line-height:1.7">
+            Al hacer clic en "Ir a Pagar" serás redirigido a la pasarela segura de Flow.cl donde podrás pagar con:<br>
+            <strong style="color:var(--white)">Tarjeta de crédito · Tarjeta de débito · Webpay</strong>
+          </p>
+        </div>
+        <p style="font-size:11px;color:#444;margin-top:8px;letter-spacing:1px">
+          ✓ Conexión segura SSL &nbsp;·&nbsp; ✓ Certificación PCI DSS &nbsp;·&nbsp; ✓ Datos encriptados
+        </p>
+      </div>
+
+      <!-- BOTÓN PAGAR -->
+      <button class="co-btn-pagar" id="co-btn-pagar" onclick="procesarCompra()">
+        Ir a Pagar con Flow →
+      </button>
+      <div class="co-seguro">
+        🔒 Pago 100% seguro · Flow.cl · Calama, Chile
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
      MODAL: CARRITO
 ══════════════════════════════════════ -->
 <div class="cart-modal-overlay" id="cart-modal" onclick="closeCartModal(event)">
@@ -1881,54 +2195,122 @@
     if (e.target === document.getElementById('cart-modal')) closeCart();
   }
 
-  /* ── CHECKOUT CON FLOW ── */
-  async function checkout() {
+  /* ── ABRIR FORMULARIO DE COMPRA ── */
+  function checkout() {
     if (cart.length === 0) {
       alert('Tu carrito está vacío.');
       return;
     }
+    // Cerrar carrito y abrir formulario
+    closeCart();
 
-    // Pedir email al cliente
-    const email = prompt('Ingresa tu email para el comprobante de pago:');
-    if (!email || !email.includes('@')) {
-      alert('Por favor ingresa un email válido.');
-      return;
+    // Llenar resumen del pedido en el formulario
+    const lista = document.getElementById('co-items-lista');
+    lista.innerHTML = '';
+    let total = 0;
+    cart.forEach(item => {
+      const precio = parseInt(String(item.price).replace(/\./g, ''), 10);
+      total += precio;
+      lista.innerHTML += `
+        <div class="co-resumen-item">
+          <div>
+            <div class="item-name">${item.name}</div>
+            <div class="item-meta">${item.cat} · Talla ${item.size}</div>
+          </div>
+          <div class="item-price">$${item.price}</div>
+        </div>`;
+    });
+    document.getElementById('co-total-monto').textContent = total.toLocaleString('es-CL');
+
+    // Mostrar formulario
+    document.getElementById('checkout-form-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCheckoutFormBtn() {
+    document.getElementById('checkout-form-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function closeCheckoutForm(e) {
+    if (e.target === document.getElementById('checkout-form-modal')) {
+      closeCheckoutFormBtn();
     }
+  }
 
-    // Mostrar loading en el botón
-    const btn = document.querySelector('.btn-checkout');
-    const textoOriginal = btn.textContent;
+  /* ── VALIDAR Y PROCESAR LA COMPRA ── */
+  async function procesarCompra() {
+    // Limpiar error previo
+    const errorEl = document.getElementById('co-error-msg');
+    errorEl.classList.remove('show');
+
+    // Recoger datos del formulario
+    const nombre   = document.getElementById('co-nombre').value.trim();
+    const apellido = document.getElementById('co-apellido').value.trim();
+    const email    = document.getElementById('co-email').value.trim();
+    const telefono = document.getElementById('co-telefono').value.trim();
+    const region   = document.getElementById('co-region').value;
+    const ciudad   = document.getElementById('co-ciudad').value.trim();
+    const calle    = document.getElementById('co-calle').value.trim();
+    const depto    = document.getElementById('co-depto').value.trim();
+    const cp       = document.getElementById('co-cp').value.trim();
+    const rut      = document.getElementById('co-rut').value.trim();
+    const notas    = document.getElementById('co-notas').value.trim();
+
+    // Validar campos obligatorios
+    if (!nombre)   { mostrarError('Por favor ingresa tu nombre.'); document.getElementById('co-nombre').focus(); return; }
+    if (!apellido) { mostrarError('Por favor ingresa tu apellido.'); document.getElementById('co-apellido').focus(); return; }
+    if (!email || !email.includes('@')) { mostrarError('Por favor ingresa un email válido.'); document.getElementById('co-email').focus(); return; }
+    if (!telefono) { mostrarError('Por favor ingresa tu teléfono o WhatsApp.'); document.getElementById('co-telefono').focus(); return; }
+    if (!region)   { mostrarError('Por favor selecciona tu región.'); document.getElementById('co-region').focus(); return; }
+    if (!ciudad)   { mostrarError('Por favor ingresa tu ciudad o comuna.'); document.getElementById('co-ciudad').focus(); return; }
+    if (!calle)    { mostrarError('Por favor ingresa tu dirección.'); document.getElementById('co-calle').focus(); return; }
+
+    // Deshabilitar botón mientras procesa
+    const btn = document.getElementById('co-btn-pagar');
     btn.textContent = 'Procesando...';
     btn.disabled = true;
 
     try {
-      // Llamar a la Netlify Function que habla con Flow
       const respuesta = await fetch('/.netlify/functions/crear-pago', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          items:  cart,
-          email:  email,
-          nombre: email.split('@')[0],
+          items: cart,
+          email,
+          nombre: nombre + ' ' + apellido,
+          envio: {
+            nombre:   nombre + ' ' + apellido,
+            telefono, region, ciudad, calle,
+            depto:    depto || '',
+            cp:       cp    || '',
+            rut:      rut   || '',
+            notas:    notas || '',
+          },
         }),
       });
 
       const datos = await respuesta.json();
 
       if (datos.urlPago) {
-        // Redirigir directo a la página de pago de Flow
-        // Flow mostrará la pantalla de pago con el monto exacto
+        // Redirigir a Flow con el monto exacto
         window.location.href = datos.urlPago;
       } else {
         throw new Error(datos.error || 'No se pudo crear el pago');
       }
 
     } catch (err) {
-      console.error('Error checkout:', err);
-      btn.textContent = textoOriginal;
+      console.error('Error al procesar compra:', err);
+      btn.textContent = 'Ir a Pagar con Flow →';
       btn.disabled = false;
-      alert('Hubo un problema al procesar el pago. Intenta de nuevo o contáctanos por WhatsApp.');
+      mostrarError('No se pudo conectar con el sistema de pagos. Verifica tu conexión e intenta de nuevo, o contáctanos por WhatsApp.');
     }
+  }
+
+  function mostrarError(msg) {
+    const el = document.getElementById('co-error-msg');
+    el.textContent = msg;
+    el.classList.add('show');
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 </script>
 
