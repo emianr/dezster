@@ -2295,14 +2295,17 @@
         // Redirigir a Flow con el monto exacto
         window.location.href = datos.urlPago;
       } else {
-        throw new Error(datos.error || 'No se pudo crear el pago');
+        // Mostrar el error exacto que viene de Flow
+        const mensajeError = datos.error || 'Error desconocido';
+        const codigoError  = datos.codigo ? ' (código ' + datos.codigo + ')' : '';
+        throw new Error(mensajeError + codigoError);
       }
 
     } catch (err) {
       console.error('Error al procesar compra:', err);
       btn.textContent = 'Ir a Pagar con Flow →';
       btn.disabled = false;
-      mostrarError('No se pudo conectar con el sistema de pagos. Verifica tu conexión e intenta de nuevo, o contáctanos por WhatsApp.');
+      mostrarError('Error: ' + err.message);
     }
   }
 
