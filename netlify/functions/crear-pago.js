@@ -81,7 +81,7 @@ exports.handler = async (event) => {
 
   try {
     // ── Leer datos del carrito enviados desde el HTML ──
-    const { items, email, nombre } = JSON.parse(event.body || '{}');
+    const { items, email, nombre, envio } = JSON.parse(event.body || '{}');
 
     if (!items || items.length === 0) {
       return {
@@ -129,9 +129,10 @@ exports.handler = async (event) => {
       urlConfirmation: siteUrl + '/.netlify/functions/confirmar-pago',
       urlReturn:       siteUrl + '/gracias.html',
       optional: JSON.stringify({
-        nombre:      nombre || 'Cliente',
-        productos:   descripcion,
-        whatsapp:    '56966942574',
+        nombre:    nombre || 'Cliente',
+        productos: descripcion,
+        whatsapp:  '56966942574',
+        envio:     envio || {},
       }),
     };
 
