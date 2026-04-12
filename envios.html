@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Envíos y Devoluciones — Dezster Chile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --red:#E8000D; --black:#080808; --black2:#111; --black3:#1a1a1a; --white:#F0EDE8; --gray:#666; --border:#1e1e1e; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--black); color: var(--white); font-family: 'Barlow', sans-serif; }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; width: 100%; object-fit: cover; }
+
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 70px;
+      background: var(--black); border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .logo { font-family: 'UnifrakturMaguntia', cursive; font-size: 32px; color: var(--white); transition: color .2s; }
+    .logo:hover { color: var(--red); }
+    .nav-back {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 4px; background: none; border: 1px solid var(--border);
+      color: var(--gray); padding: 10px 20px; cursor: pointer; text-transform: uppercase; transition: all .2s;
+    }
+    .nav-back:hover { border-color: var(--white); color: var(--white); }
+
+    /* HERO */
+    .page-hero {
+      padding: 80px 48px 60px; border-bottom: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .page-hero::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--red);
+    }
+    .eyebrow {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 6px; color: var(--red); text-transform: uppercase; margin-bottom: 16px;
+    }
+    .page-title {
+      font-family: 'Barlow Condensed', sans-serif; font-size: clamp(48px, 8vw, 96px);
+      font-weight: 900; text-transform: uppercase; letter-spacing: -2px; line-height: .9;
+      margin-bottom: 20px;
+    }
+    .page-subtitle { font-size: 14px; color: var(--gray); line-height: 1.8; max-width: 480px; }
+
+    /* CONTENT */
+    .content { max-width: 900px; margin: 0 auto; padding: 80px 48px; }
+
+    /* INFO CARDS */
+    .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--black3); border: 1px solid var(--black3); margin-bottom: 64px; }
+    .info-card { background: var(--black2); padding: 32px 28px; }
+    .info-card-icon { font-size: 28px; margin-bottom: 16px; }
+    .info-card-title {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 900;
+      letter-spacing: 1px; text-transform: uppercase; color: var(--white); margin-bottom: 8px;
+    }
+    .info-card-text { font-size: 13px; color: var(--gray); line-height: 1.7; }
+    .info-card-highlight { color: var(--red); font-weight: 500; }
+
+    /* SECCIONES */
+    .section-block { margin-bottom: 56px; padding-bottom: 56px; border-bottom: 1px solid var(--border); }
+    .section-block:last-child { border-bottom: none; margin-bottom: 0; }
+    .section-label {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700;
+      letter-spacing: 6px; color: var(--red); text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .section-title-sm {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 32px; font-weight: 900;
+      text-transform: uppercase; letter-spacing: -0.5px; margin-bottom: 28px;
+    }
+
+    /* TABLA DE TIEMPOS */
+    .tabla { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+    .tabla th {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700;
+      letter-spacing: 4px; text-transform: uppercase; color: var(--gray);
+      padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border);
+    }
+    .tabla td { font-size: 13px; color: var(--white); padding: 14px 16px; border-bottom: 1px solid #141414; vertical-align: top; }
+    .tabla tr:hover td { background: var(--black2); }
+    .tabla .highlight { color: var(--red); font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 700; }
+
+    /* PASOS */
+    .pasos-grid { display: flex; flex-direction: column; gap: 0; }
+    .paso-item {
+      display: flex; gap: 20px; padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .paso-item:last-child { border-bottom: none; }
+    .paso-num {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 3px; color: var(--red); background: rgba(232,0,13,.1);
+      padding: 6px 12px; flex-shrink: 0; height: fit-content; margin-top: 2px;
+    }
+    .paso-contenido h4 {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px;
+    }
+    .paso-contenido p { font-size: 13px; color: var(--gray); line-height: 1.7; }
+
+    /* FAQ */
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-q {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase; padding: 18px 0;
+      cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+      transition: color .2s;
+    }
+    .faq-q:hover { color: var(--red); }
+    .faq-q .faq-arrow { transition: transform .3s; font-size: 18px; color: var(--red); }
+    .faq-q.open .faq-arrow { transform: rotate(45deg); }
+    .faq-a { font-size: 13px; color: var(--gray); line-height: 1.8; max-height: 0; overflow: hidden; transition: max-height .4s ease, padding .3s; }
+    .faq-a.open { max-height: 300px; padding-bottom: 18px; }
+
+    /* CTA */
+    .cta-box {
+      background: var(--red); padding: 48px; text-align: center; margin-top: 64px;
+    }
+    .cta-title {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 36px; font-weight: 900;
+      text-transform: uppercase; letter-spacing: -1px; color: var(--black); margin-bottom: 12px;
+    }
+    .cta-text { font-size: 14px; color: rgba(0,0,0,.65); margin-bottom: 28px; }
+    .btn-black {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700;
+      letter-spacing: 4px; background: var(--black); color: var(--white);
+      border: none; padding: 16px 40px; cursor: pointer; text-transform: uppercase; transition: all .2s;
+    }
+    .btn-black:hover { background: #1a1a1a; }
+
+    /* FOOTER */
+    .mini-footer {
+      border-top: 1px solid var(--border); padding: 24px 48px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .mini-footer span {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 10px;
+      font-weight: 700; letter-spacing: 4px; color: #333; text-transform: uppercase;
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; height: 60px; }
+      .logo { font-size: 26px; }
+      .page-hero { padding: 48px 20px 40px; }
+      .content { padding: 48px 20px; }
+      .info-grid { grid-template-columns: 1fr; }
+      .mini-footer { flex-direction: column; gap: 8px; padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html"><span class="logo">Dezster</span></a>
+  <button class="nav-back" onclick="window.location.href='index.html'">← Volver</button>
+</nav>
+
+<!-- HERO -->
+<div class="page-hero">
+  <p class="eyebrow">— Información de Envío</p>
+  <h1 class="page-title">Envíos &<br>Devoluciones</h1>
+  <p class="page-subtitle">Despachamos desde Calama a todo Chile. Cada pedido sale con cariño y llega con actitud.</p>
+</div>
+
+<div class="content">
+
+  <!-- INFO RÁPIDA -->
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="info-card-icon">📦</div>
+      <div class="info-card-title">Preparación</div>
+      <p class="info-card-text">Tu pedido se prepara en <span class="info-card-highlight">1 a 2 días hábiles</span> después de confirmar el pago.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-card-icon">🚚</div>
+      <div class="info-card-title">Tiempo de entrega</div>
+      <p class="info-card-text"><span class="info-card-highlight">3 a 7 días hábiles</span> para todo Chile. Calama y norte: generalmente 2 a 4 días.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-card-icon">💬</div>
+      <div class="info-card-title">Seguimiento</div>
+      <p class="info-card-text">Te enviamos el <span class="info-card-highlight">número de seguimiento</span> por WhatsApp una vez despachado.</p>
+    </div>
+  </div>
+
+  <!-- DETALLES DE ENVÍO -->
+  <div class="section-block">
+    <p class="section-label">01 — Destinos y Tiempos</p>
+    <h2 class="section-title-sm">¿A Dónde Enviamos?</h2>
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Destino</th>
+          <th>Tiempo estimado</th>
+          <th>Costo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Calama y Antofagasta</td>
+          <td class="highlight">2 — 3 días hábiles</td>
+          <td>$2.990</td>
+        </tr>
+        <tr>
+          <td>Norte de Chile (I — III región)</td>
+          <td class="highlight">3 — 4 días hábiles</td>
+          <td>$3.990</td>
+        </tr>
+        <tr>
+          <td>Zona Central (IV — VII región)</td>
+          <td class="highlight">4 — 6 días hábiles</td>
+          <td>$4.490</td>
+        </tr>
+        <tr>
+          <td>Santiago y Metropolitana</td>
+          <td class="highlight">3 — 5 días hábiles</td>
+          <td>$3.990</td>
+        </tr>
+        <tr>
+          <td>Sur de Chile (VIII — XII región)</td>
+          <td class="highlight">5 — 7 días hábiles</td>
+          <td>$5.490</td>
+        </tr>
+        <tr>
+          <td style="color:var(--red);font-weight:500">Envío GRATIS en compras +$60.000</td>
+          <td colspan="2" style="color:var(--gray)">Aplica para todo Chile</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px;color:var(--gray)">* Los tiempos son estimados y pueden variar según la empresa de transporte. No incluyen días sábado, domingo ni festivos.</p>
+  </div>
+
+  <!-- PROCESO DE COMPRA -->
+  <div class="section-block">
+    <p class="section-label">02 — Proceso</p>
+    <h2 class="section-title-sm">¿Cómo Funciona?</h2>
+    <div class="pasos-grid">
+      <div class="paso-item">
+        <span class="paso-num">01</span>
+        <div class="paso-contenido">
+          <h4>Realizas tu pedido</h4>
+          <p>Agrega los productos al carrito, completa tus datos de envío y paga de forma segura a través de Flow.cl con tarjeta de crédito, débito o Webpay.</p>
+        </div>
+      </div>
+      <div class="paso-item">
+        <span class="paso-num">02</span>
+        <div class="paso-contenido">
+          <h4>Confirmamos el pago</h4>
+          <p>Una vez que Flow confirma tu pago, recibirás un correo de confirmación. En menos de 24 horas te contactamos por WhatsApp para confirmar los datos.</p>
+        </div>
+      </div>
+      <div class="paso-item">
+        <span class="paso-num">03</span>
+        <div class="paso-contenido">
+          <h4>Preparamos tu pedido</h4>
+          <p>Tu prenda se prepara y empaqueta en 1 a 2 días hábiles. Revisamos cada pieza antes de despachar para asegurar que llegue perfecta.</p>
+        </div>
+      </div>
+      <div class="paso-item">
+        <span class="paso-num">04</span>
+        <div class="paso-contenido">
+          <h4>Despachamos y te notificamos</h4>
+          <p>Una vez despachado, te enviamos el número de seguimiento por WhatsApp para que puedas rastrear tu pedido en tiempo real.</p>
+        </div>
+      </div>
+      <div class="paso-item">
+        <span class="paso-num">05</span>
+        <div class="paso-contenido">
+          <h4>¡Llega tu pedido!</h4>
+          <p>El transportista te contactará para coordinar la entrega. Si no estás, dejarán aviso para retirar en sucursal.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEVOLUCIONES -->
+  <div class="section-block">
+    <p class="section-label">03 — Cambios y Devoluciones</p>
+    <h2 class="section-title-sm">Política de Cambios</h2>
+    <div class="pasos-grid">
+      <div class="paso-item">
+        <span class="paso-num">📋</span>
+        <div class="paso-contenido">
+          <h4>¿Cuándo puedo hacer un cambio?</h4>
+          <p>Aceptamos cambios dentro de los <strong style="color:var(--white)">7 días corridos</strong> desde que recibes tu pedido, siempre que la prenda esté sin usar, con etiquetas y en su embalaje original.</p>
+        </div>
+      </div>
+      <div class="paso-item">
+        <span class="paso-num">📏</span>
+        <div class="paso-contenido">
+          <h4>Cambio de talla</h4>
+          <p>Si la talla no te queda, puedes cambiarla por otra disponible. El costo del nuevo envío es de cargo del cliente. Si fue un error nuestro, el envío es gratis.</p>
+        </div>
+      </div>
+      <div class="paso-item">
+        <span class="paso-num">❌</span>
+        <div class="paso-contenido">
+          <h4>¿Qué NO se puede cambiar?</h4>
+          <p>Prendas usadas, lavadas o sin etiquetas. Accesorios como gorros y chapas. Productos en liquidación o con descuento especial.</p>
+        </div>
+      </div>
+      <div class="paso-item">
+        <span class="paso-num">💬</span>
+        <div class="paso-contenido">
+          <h4>¿Cómo inicio un cambio?</h4>
+          <p>Escríbenos por WhatsApp al <strong style="color:var(--white)">+56 9 6694 2574</strong> con tu número de orden y una foto del producto. Te responderemos en menos de 24 horas con las instrucciones.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section-block">
+    <p class="section-label">04 — Preguntas Frecuentes</p>
+    <h2 class="section-title-sm">FAQ</h2>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">¿Puedo retirar mi pedido en Calama? <span class="faq-arrow">+</span></div>
+      <div class="faq-a">Sí, puedes coordinar retiro en Calama sin costo de envío. Escríbenos por WhatsApp y te damos la dirección de retiro y horarios disponibles.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">¿Qué empresa de transporte usan? <span class="faq-arrow">+</span></div>
+      <div class="faq-a">Trabajamos principalmente con Starken y Chilexpress, dependiendo de tu región y disponibilidad. En el número de seguimiento que te enviamos podrás ver cuál transportista tiene tu pedido.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">¿Qué pasa si no estoy cuando llega el pedido? <span class="faq-arrow">+</span></div>
+      <div class="faq-a">El transportista dejará un aviso de visita y podrás retirar en la sucursal más cercana con tu carnet de identidad. También puedes solicitar una segunda visita contactando directamente a la empresa de transporte con el número de seguimiento.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">¿El producto llega empaquetado de forma segura? <span class="faq-arrow">+</span></div>
+      <div class="faq-a">Sí. Cada prenda se envía doblada y protegida en bolsa hermética dentro de una caja o sobre resistente. Revisamos cada pedido antes de despachar.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">¿Puedo pedir factura? <span class="faq-arrow">+</span></div>
+      <div class="faq-a">Por el momento solo emitimos boleta electrónica. Si necesitas factura para empresa, contáctanos antes de hacer el pedido y lo coordinamos.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- CTA -->
+<div class="cta-box">
+  <div class="cta-title">¿Tienes dudas sobre tu pedido?</div>
+  <p class="cta-text">Escríbenos directamente y te respondemos en menos de 24 horas.</p>
+  <button class="btn-black" onclick="window.open('https://wa.me/56966942574?text=Hola! Tengo una consulta sobre mi pedido en Dezster Chile.','_blank')">
+    Escribir por WhatsApp →
+  </button>
+</div>
+
+<div class="mini-footer">
+  <span>© 2025 Dezster Chile — Todos los derechos reservados</span>
+  <span>Calama, Chile</span>
+</div>
+
+<script>
+  function toggleFaq(el) {
+    const answer = el.nextElementSibling;
+    el.classList.toggle('open');
+    answer.classList.toggle('open');
+  }
+</script>
+</body>
+</html>
