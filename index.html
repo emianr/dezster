@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dezster — Drop Culture desde Calama</title>
+  <title>Dezster Chile — Drop Culture desde Calama</title>
   <meta name="description" content="Dezster — Ropa sin género, drop culture desde Calama, Chile." />
 
   <!-- ✅ FUENTES -->
@@ -1314,6 +1314,94 @@
       .ann-item { font-size: 10px; letter-spacing: 3px; }
     }
 
+
+    /* ════════════════════════════════════════
+       CARRUSEL DE PRENDAS
+    ════════════════════════════════════════ */
+    .carousel-section { padding: 80px 0; overflow: hidden; border-top: 1px solid var(--border); }
+    .carousel-header { padding: 0 48px; margin-bottom: 40px; display: flex; align-items: flex-end; justify-content: space-between; }
+    .carousel-track-wrap { overflow: hidden; cursor: grab; user-select: none; }
+    .carousel-track-wrap:active { cursor: grabbing; }
+    .carousel-track {
+      display: flex; gap: 1px;
+      transition: transform .4s cubic-bezier(.25,.46,.45,.94);
+      will-change: transform;
+    }
+    .carousel-slide {
+      flex-shrink: 0;
+      width: calc((100vw - 96px) / 3);
+      min-width: 260px;
+      background: var(--black2);
+      position: relative; overflow: hidden;
+    }
+    .carousel-slide-img {
+      aspect-ratio: 3/4; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--black3);
+    }
+    .carousel-slide-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+    .carousel-slide:hover .carousel-slide-img img { transform: scale(1.04); }
+    .carousel-slide-info { padding: 16px; }
+    .carousel-slide-cat {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 4px;
+      color: var(--gray); text-transform: uppercase; margin-bottom: 4px;
+    }
+    .carousel-slide-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px; font-weight: 700; letter-spacing: 1px;
+      color: var(--white); text-transform: uppercase;
+    }
+    .carousel-slide-price {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 15px; font-weight: 900; color: var(--red);
+      margin-top: 6px;
+    }
+    .carousel-controls {
+      display: flex; gap: 8px; padding: 0 48px; margin-top: 28px;
+    }
+    .carousel-btn {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px; font-weight: 700;
+      background: none; border: 1px solid var(--border);
+      color: var(--gray); width: 44px; height: 44px;
+      cursor: pointer; transition: all .2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .carousel-btn:hover { border-color: var(--red); color: var(--red); }
+    .carousel-dots { display: flex; gap: 6px; align-items: center; margin-left: 16px; }
+    .carousel-dot {
+      width: 6px; height: 6px; background: var(--border);
+      cursor: pointer; transition: all .3s;
+    }
+    .carousel-dot.active { background: var(--red); width: 20px; }
+
+    /* ════════════════════════════════════════
+       SECCIÓN MUJER
+    ════════════════════════════════════════ */
+    .genero-tabs {
+      display: flex; gap: 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 48px;
+    }
+    .genero-tab {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px; font-weight: 700; letter-spacing: 4px;
+      text-transform: uppercase;
+      background: none; border: none; border-bottom: 2px solid transparent;
+      color: var(--gray); padding: 14px 28px; cursor: pointer;
+      transition: all .2s; margin-bottom: -1px;
+    }
+    .genero-tab.active { color: var(--white); border-bottom-color: var(--red); }
+    .genero-tab:hover { color: var(--white); }
+    .genero-panel { display: none; }
+    .genero-panel.active { display: block; }
+
+    @media (max-width: 768px) {
+      .carousel-slide { width: calc(100vw - 80px); }
+      .carousel-header, .carousel-controls { padding: 0 20px; }
+    }
+
   </style>
 </head>
 <body>
@@ -1396,7 +1484,7 @@
   <a href="#contacto"   onclick="closeMenu()">Contacto</a>
   <div class="mobile-menu-footer">
     <button class="social-btn" onclick="window.open('https://www.instagram.com/dezsterchile','_blank')">IG</button>
-    <button class="social-btn" onclick="window.open('https://tiktok.com/@dezter','_blank')">TK</button>
+    <button class="social-btn" onclick="window.open('https://www.tiktok.com/@dezster.mob','_blank')">TK</button>
     <button class="social-btn" onclick="window.open('https://wa.me/56966942574','_blank')">WP</button>
   </div>
 </div>
@@ -1474,6 +1562,85 @@
     <div class="mq-item"><i>✦</i><span>Sin Género</span></div>
   </div>
 </div>
+
+<!-- ══════════════════════════════════════
+     CARRUSEL DE PRENDAS — AUTO + DRAG
+══════════════════════════════════════ -->
+<section class="carousel-section">
+  <div class="carousel-header">
+    <div>
+      <p class="sec-eyebrow">— Colección Completa</p>
+      <h2 class="sec-title">Todas las Prendas</h2>
+    </div>
+    <span style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:3px;color:var(--gray);text-transform:uppercase">
+      Arrastra o toca →
+    </span>
+  </div>
+
+  <div class="carousel-track-wrap" id="carousel-wrap">
+    <div class="carousel-track" id="carousel-track">
+      <!--
+        ✅ CÓMO AGREGAR MÁS SLIDES AL CARRUSEL:
+        Copia un bloque .carousel-slide y cambia la imagen, nombre y precio.
+        Puedes tener todos los que quieras.
+      -->
+      <div class="carousel-slide">
+        <div class="carousel-slide-img"><img src="images/void-tee.jpg" alt="DZT Void Tee" /></div>
+        <div class="carousel-slide-info">
+          <div class="carousel-slide-cat">Camiseta · Unisex</div>
+          <div class="carousel-slide-name">DZT Void Tee</div>
+          <div class="carousel-slide-price">$24.990</div>
+        </div>
+      </div>
+      <div class="carousel-slide">
+        <div class="carousel-slide-img"><img src="images/arch-hood.jpg" alt="DZT Arch Hood" /></div>
+        <div class="carousel-slide-info">
+          <div class="carousel-slide-cat">Hoodie · Unisex</div>
+          <div class="carousel-slide-name">DZT Arch Hood</div>
+          <div class="carousel-slide-price">$49.990</div>
+        </div>
+      </div>
+      <div class="carousel-slide">
+        <div class="carousel-slide-img"><img src="images/cargo-001.jpg" alt="DZT Cargo 001" /></div>
+        <div class="carousel-slide-info">
+          <div class="carousel-slide-cat">Pantalón · Unisex</div>
+          <div class="carousel-slide-name">DZT Cargo 001</div>
+          <div class="carousel-slide-price">$39.990</div>
+        </div>
+      </div>
+      <div class="carousel-slide">
+        <div class="carousel-slide-img"><img src="images/snapback.jpg" alt="DZT Snapback" /></div>
+        <div class="carousel-slide-info">
+          <div class="carousel-slide-cat">Accesorio · Unisex</div>
+          <div class="carousel-slide-name">DZT Snapback</div>
+          <div class="carousel-slide-price">$14.990</div>
+        </div>
+      </div>
+      <div class="carousel-slide">
+        <div class="carousel-slide-img"><img src="images/void-tee.jpg" alt="DZT Void Tee" /></div>
+        <div class="carousel-slide-info">
+          <div class="carousel-slide-cat">Camiseta · Mujer</div>
+          <div class="carousel-slide-name">DZT Void Tee Mujer</div>
+          <div class="carousel-slide-price">$24.990</div>
+        </div>
+      </div>
+      <div class="carousel-slide">
+        <div class="carousel-slide-img"><img src="images/arch-hood.jpg" alt="DZT Hood Mujer" /></div>
+        <div class="carousel-slide-info">
+          <div class="carousel-slide-cat">Hoodie · Mujer</div>
+          <div class="carousel-slide-name">DZT Hood Mujer</div>
+          <div class="carousel-slide-price">$49.990</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="carousel-controls">
+    <button class="carousel-btn" id="carousel-prev">←</button>
+    <button class="carousel-btn" id="carousel-next">→</button>
+    <div class="carousel-dots" id="carousel-dots"></div>
+  </div>
+</section>
 
 <!-- ══════════════════════════════════════
      PRODUCTOS — DROP 001
@@ -1710,6 +1877,147 @@
 </section>
 
 <!-- ══════════════════════════════════════
+     SECCIÓN MUJER
+══════════════════════════════════════ -->
+<section class="section" id="mujer" style="border-top:1px solid var(--border)">
+  <div class="sec-head">
+    <div>
+      <p class="sec-eyebrow">— Colección Mujer</p>
+      <h2 class="sec-title">Para Ella</h2>
+    </div>
+    <button class="see-all">Ver Todo →</button>
+  </div>
+
+  <!-- TABS CATEGORÍAS -->
+  <div class="genero-tabs">
+    <button class="genero-tab active" onclick="switchTab(this,'mujer-tops')">Tops</button>
+    <button class="genero-tab" onclick="switchTab(this,'mujer-bottoms')">Bottoms</button>
+    <button class="genero-tab" onclick="switchTab(this,'mujer-hoodies')">Hoodies</button>
+    <button class="genero-tab" onclick="switchTab(this,'mujer-accesorios')">Accesorios</button>
+  </div>
+
+  <!-- TOPS -->
+  <div class="genero-panel active" id="mujer-tops">
+    <div class="prod-grid">
+      <div class="prod-card"
+           data-name="DZT Void Tee Mujer"
+           data-price="24.990"
+           data-cat="Camiseta Mujer"
+           data-desc="Camiseta oversize corte mujer. Algodón 220g. Serigrafía exclusiva Drop 001."
+           onclick="openProduct(this)">
+        <div class="prod-img">
+          <img src="images/void-tee.jpg" alt="DZT Void Tee Mujer" />
+          <div class="prod-badge badge-new">New</div>
+        </div>
+        <div class="prod-info">
+          <p class="prod-cat">Camiseta · Mujer</p>
+          <p class="prod-name">DZT Void Tee</p>
+          <div class="prod-footer">
+            <span class="prod-price">$24.990</span>
+            <button class="prod-add">+ Ver</button>
+          </div>
+        </div>
+      </div>
+      <div class="prod-card"
+           data-name="DZT Crop Tee"
+           data-price="22.990"
+           data-cat="Camiseta Mujer"
+           data-desc="Camiseta crop fit. Algodón suave. Corte femenino con logo Dezster."
+           onclick="openProduct(this)">
+        <div class="prod-img">
+          <img src="images/void-tee.jpg" alt="DZT Crop Tee" />
+          <div class="prod-badge badge-drop">Drop</div>
+        </div>
+        <div class="prod-info">
+          <p class="prod-cat">Camiseta · Mujer</p>
+          <p class="prod-name">DZT Crop Tee</p>
+          <div class="prod-footer">
+            <span class="prod-price">$22.990</span>
+            <button class="prod-add">+ Ver</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOMS -->
+  <div class="genero-panel" id="mujer-bottoms">
+    <div class="prod-grid">
+      <div class="prod-card"
+           data-name="DZT Cargo Mujer"
+           data-price="36.990"
+           data-cat="Pantalón Mujer"
+           data-desc="Cargo pant fit mujer. Tela ripstop. Bolsillos funcionales."
+           onclick="openProduct(this)">
+        <div class="prod-img">
+          <img src="images/cargo-001.jpg" alt="DZT Cargo Mujer" />
+          <div class="prod-badge badge-new">New</div>
+        </div>
+        <div class="prod-info">
+          <p class="prod-cat">Pantalón · Mujer</p>
+          <p class="prod-name">DZT Cargo Mujer</p>
+          <div class="prod-footer">
+            <span class="prod-price">$36.990</span>
+            <button class="prod-add">+ Ver</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOODIES -->
+  <div class="genero-panel" id="mujer-hoodies">
+    <div class="prod-grid">
+      <div class="prod-card"
+           data-name="DZT Hood Mujer"
+           data-price="46.990"
+           data-cat="Hoodie Mujer"
+           data-desc="Hoodie oversize mujer. Algodón 350g. Logo bordado. Capucha doble capa."
+           onclick="openProduct(this)">
+        <div class="prod-img">
+          <img src="images/arch-hood.jpg" alt="DZT Hood Mujer" />
+          <div class="prod-badge badge-drop">Drop</div>
+        </div>
+        <div class="prod-info">
+          <p class="prod-cat">Hoodie · Mujer</p>
+          <p class="prod-name">DZT Hood Mujer</p>
+          <div class="prod-footer">
+            <span class="prod-price">$46.990</span>
+            <button class="prod-add">+ Ver</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACCESORIOS -->
+  <div class="genero-panel" id="mujer-accesorios">
+    <div class="prod-grid">
+      <div class="prod-card"
+           data-name="DZT Cap Mujer"
+           data-price="14.990"
+           data-cat="Accesorio Mujer"
+           data-desc="Cap ajustable con logo Dezster bordado. Talla única."
+           onclick="openProduct(this)">
+        <div class="prod-img">
+          <img src="images/snapback.jpg" alt="DZT Cap Mujer" />
+          <div class="prod-badge badge-new">New</div>
+        </div>
+        <div class="prod-info">
+          <p class="prod-cat">Accesorio · Mujer</p>
+          <p class="prod-name">DZT Cap Mujer</p>
+          <div class="prod-footer">
+            <span class="prod-price">$14.990</span>
+            <button class="prod-add">+ Ver</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════
      INSTAGRAM GRID
 ══════════════════════════════════════ -->
 <section class="section" style="padding-top:0">
@@ -1782,7 +2090,7 @@
     </p>
     <div class="foot-social">
       <button class="social-btn" onclick="window.open('https://www.instagram.com/dezsterchile','_blank')">IG</button>
-      <button class="social-btn" onclick="window.open('https://tiktok.com/@dezter','_blank')">TK</button>
+      <button class="social-btn" onclick="window.open('https://www.tiktok.com/@dezster.mob','_blank')">TK</button>
       <button class="social-btn" onclick="window.open('https://wa.me/56966942574','_blank')">WP</button>
     </div>
   </div>
@@ -1798,9 +2106,9 @@
   <div class="foot-col">
     <h5>Ayuda</h5>
     <ul>
-      <li><a href="#contacto">Envíos</a></li>
-      <li><a href="#contacto">Cambios</a></li>
-      <li><a href="#contacto">Guía de Tallas</a></li>
+      <li><a href="envios.html">Envíos</a></li>
+      <li><a href="envios.html">Cambios y Devoluciones</a></li>
+      <li><a href="tallas.html">Guía de Tallas</a></li>
       <li><a href="#contacto">Preguntas Frecuentes</a></li>
     </ul>
   </div>
@@ -2315,6 +2623,121 @@
     el.classList.add('show');
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
+  /* ══════════════════════════════════════
+     TABS MUJER
+  ══════════════════════════════════════ */
+  function switchTab(btn, panelId) {
+    // Desactivar todos los tabs y panels
+    btn.closest('.genero-tabs').querySelectorAll('.genero-tab').forEach(t => t.classList.remove('active'));
+    btn.closest('section').querySelectorAll('.genero-panel').forEach(p => p.classList.remove('active'));
+    // Activar el seleccionado
+    btn.classList.add('active');
+    document.getElementById(panelId).classList.add('active');
+  }
+
+  /* ══════════════════════════════════════
+     CARRUSEL — AUTO + DRAG + TOUCH
+  ══════════════════════════════════════ */
+  (function initCarousel() {
+    const track    = document.getElementById('carousel-track');
+    const wrap     = document.getElementById('carousel-wrap');
+    const dotsWrap = document.getElementById('carousel-dots');
+    if (!track || !wrap) return;
+
+    const slides      = track.querySelectorAll('.carousel-slide');
+    const total       = slides.length;
+    let   current     = 0;
+    let   autoTimer   = null;
+    let   isDragging  = false;
+    let   startX      = 0;
+    let   startScroll = 0;
+
+    // Calcular ancho de un slide
+    function slideWidth() {
+      return slides[0].offsetWidth + 1; // +1 por el gap de 1px
+    }
+
+    // Ir a un slide específico
+    function goTo(index) {
+      current = ((index % total) + total) % total;
+      track.style.transform = `translateX(-${current * slideWidth()}px)`;
+      dotsWrap.querySelectorAll('.carousel-dot').forEach((d, i) => {
+        d.classList.toggle('active', i === current);
+      });
+    }
+
+    // Crear dots
+    for (let i = 0; i < total; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+      dot.onclick = () => { goTo(i); resetAuto(); };
+      dotsWrap.appendChild(dot);
+    }
+
+    // Botones prev/next
+    document.getElementById('carousel-prev').onclick = () => { goTo(current - 1); resetAuto(); };
+    document.getElementById('carousel-next').onclick = () => { goTo(current + 1); resetAuto(); };
+
+    // Auto avance cada 3.5 segundos
+    function startAuto() {
+      autoTimer = setInterval(() => goTo(current + 1), 3500);
+    }
+    function resetAuto() {
+      clearInterval(autoTimer);
+      startAuto();
+    }
+
+    // DRAG con mouse
+    wrap.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      startX     = e.clientX;
+      startScroll = current;
+      track.style.transition = 'none';
+    });
+    wrap.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const diff = (startX - e.clientX) / slideWidth();
+      track.style.transform = `translateX(-${(startScroll + diff) * slideWidth()}px)`;
+    });
+    wrap.addEventListener('mouseup', (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      track.style.transition = '';
+      const diff = startX - e.clientX;
+      if (Math.abs(diff) > 60) goTo(startScroll + (diff > 0 ? 1 : -1));
+      else goTo(startScroll);
+      resetAuto();
+    });
+    wrap.addEventListener('mouseleave', () => {
+      if (isDragging) { isDragging = false; track.style.transition = ''; goTo(startScroll); }
+    });
+
+    // TOUCH en móvil
+    wrap.addEventListener('touchstart', (e) => {
+      startX      = e.touches[0].clientX;
+      startScroll = current;
+      track.style.transition = 'none';
+    }, { passive: true });
+    wrap.addEventListener('touchmove', (e) => {
+      const diff = (startX - e.touches[0].clientX) / slideWidth();
+      track.style.transform = `translateX(-${(startScroll + diff) * slideWidth()}px)`;
+    }, { passive: true });
+    wrap.addEventListener('touchend', (e) => {
+      track.style.transition = '';
+      const diff = startX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) goTo(startScroll + (diff > 0 ? 1 : -1));
+      else goTo(startScroll);
+      resetAuto();
+    });
+
+    // Recalcular al cambiar tamaño
+    window.addEventListener('resize', () => goTo(current));
+
+    // Iniciar
+    goTo(0);
+    startAuto();
+  })();
+
 </script>
 
 </body>
