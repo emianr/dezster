@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guía de Tallas — Dezster Chile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --red:#E8000D; --black:#080808; --black2:#111; --black3:#1a1a1a; --white:#F0EDE8; --gray:#666; --border:#1e1e1e; }
+    body { background: var(--black); color: var(--white); font-family: 'Barlow', sans-serif; }
+    a { text-decoration: none; color: inherit; }
+
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 70px;
+      background: var(--black); border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .logo { font-family: 'UnifrakturMaguntia', cursive; font-size: 32px; color: var(--white); transition: color .2s; }
+    .logo:hover { color: var(--red); }
+    .nav-back {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 4px; background: none; border: 1px solid var(--border);
+      color: var(--gray); padding: 10px 20px; cursor: pointer; text-transform: uppercase; transition: all .2s;
+    }
+    .nav-back:hover { border-color: var(--white); color: var(--white); }
+
+    .page-hero {
+      padding: 80px 48px 60px; border-bottom: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .page-hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--red); }
+    .eyebrow {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 6px; color: var(--red); text-transform: uppercase; margin-bottom: 16px;
+    }
+    .page-title {
+      font-family: 'Barlow Condensed', sans-serif; font-size: clamp(48px, 8vw, 96px);
+      font-weight: 900; text-transform: uppercase; letter-spacing: -2px; line-height: .9; margin-bottom: 20px;
+    }
+    .page-subtitle { font-size: 14px; color: var(--gray); line-height: 1.8; max-width: 480px; }
+
+    .content { padding: 80px 48px; max-width: 1000px; margin: 0 auto; }
+
+    /* TABS */
+    .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+    .tab {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700;
+      letter-spacing: 4px; text-transform: uppercase;
+      background: none; border: none; border-bottom: 2px solid transparent;
+      color: var(--gray); padding: 14px 28px; cursor: pointer; transition: all .2s; margin-bottom: -1px;
+    }
+    .tab.active { color: var(--white); border-bottom-color: var(--red); }
+    .tab:hover { color: var(--white); }
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* UNIDADES TOGGLE */
+    .units-toggle {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 32px;
+      font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase; color: var(--gray);
+    }
+    .unit-btn {
+      background: none; border: 1px solid var(--border); color: var(--gray);
+      font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase; padding: 7px 16px;
+      cursor: pointer; transition: all .2s;
+    }
+    .unit-btn.active { border-color: var(--red); color: var(--red); background: rgba(232,0,13,.08); }
+
+    /* TABLA */
+    .tabla-wrap { overflow-x: auto; margin-bottom: 40px; }
+    .tabla { width: 100%; border-collapse: collapse; min-width: 500px; }
+    .tabla th {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700;
+      letter-spacing: 4px; text-transform: uppercase; color: var(--gray);
+      padding: 14px 16px; text-align: center; border-bottom: 1px solid var(--border);
+      background: var(--black2);
+    }
+    .tabla th:first-child { text-align: left; }
+    .tabla td {
+      font-size: 13px; color: var(--white); padding: 14px 16px;
+      text-align: center; border-bottom: 1px solid #141414;
+    }
+    .tabla td:first-child { text-align: left; color: var(--gray); font-weight: 500; }
+    .tabla tr:hover td { background: var(--black2); }
+    .tabla .talla-cell {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 900;
+      color: var(--white); background: var(--black3);
+    }
+    .tabla .recommended { color: var(--red); font-weight: 700; }
+
+    /* DIAGRAMA CÓMO MEDIR */
+    .como-medir { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 48px; }
+    .medida-item { display: flex; gap: 16px; align-items: flex-start; }
+    .medida-num {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 900;
+      color: var(--red); flex-shrink: 0; min-width: 28px;
+    }
+    .medida-info h4 {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px;
+    }
+    .medida-info p { font-size: 12px; color: var(--gray); line-height: 1.7; }
+
+    /* TIP BOX */
+    .tip-box {
+      background: rgba(232,0,13,.06); border: 1px solid rgba(232,0,13,.2);
+      padding: 20px 24px; margin-bottom: 40px;
+      display: flex; gap: 14px; align-items: flex-start;
+    }
+    .tip-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .tip-text { font-size: 13px; color: var(--gray); line-height: 1.7; }
+    .tip-text strong { color: var(--white); }
+
+    /* CALCULADORA */
+    .calc-box {
+      background: var(--black2); border: 1px solid var(--border); padding: 32px;
+      margin-bottom: 48px;
+    }
+    .calc-title {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 900;
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px;
+    }
+    .calc-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+    .calc-field { flex: 1; min-width: 120px; }
+    .calc-field label {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700;
+      letter-spacing: 3px; color: var(--gray); text-transform: uppercase;
+      display: block; margin-bottom: 8px;
+    }
+    .calc-field input, .calc-field select {
+      width: 100%; background: var(--black3); border: 1px solid var(--border);
+      color: var(--white); font-family: 'Barlow', sans-serif; font-size: 14px;
+      padding: 12px 14px; outline: none; transition: border-color .2s;
+    }
+    .calc-field input:focus, .calc-field select:focus { border-color: var(--red); }
+    .calc-field select option { background: var(--black2); }
+    .btn-calc {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700;
+      letter-spacing: 4px; background: var(--red); color: var(--black);
+      border: none; padding: 14px 32px; cursor: pointer; text-transform: uppercase; transition: background .2s;
+    }
+    .btn-calc:hover { background: #ff1a24; }
+    .calc-result {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 28px; font-weight: 900; color: var(--white);
+      margin-top: 16px; display: none;
+    }
+    .calc-result span { color: var(--red); font-size: 48px; }
+    .calc-result-sub { font-size: 13px; color: var(--gray); margin-top: 4px; font-family: 'Barlow', sans-serif; font-weight: 300; }
+
+    .mini-footer {
+      border-top: 1px solid var(--border); padding: 24px 48px;
+      display: flex; justify-content: space-between;
+    }
+    .mini-footer span {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 10px;
+      font-weight: 700; letter-spacing: 4px; color: #333; text-transform: uppercase;
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; height: 60px; }
+      .page-hero { padding: 48px 20px 40px; }
+      .content { padding: 48px 20px; }
+      .como-medir { grid-template-columns: 1fr; }
+      .tab { padding: 12px 16px; font-size: 11px; }
+      .mini-footer { flex-direction: column; gap: 8px; padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html"><span class="logo">Dezster</span></a>
+  <button class="nav-back" onclick="window.location.href='index.html'">← Volver</button>
+</nav>
+
+<div class="page-hero">
+  <p class="eyebrow">— Encuentra tu talla perfecta</p>
+  <h1 class="page-title">Guía de<br>Tallas</h1>
+  <p class="page-subtitle">Todas las prendas Dezster son de corte unisex. Ingresa tus medidas y te decimos tu talla exacta.</p>
+</div>
+
+<div class="content">
+
+  <!-- CALCULADORA -->
+  <div class="calc-box">
+    <div class="calc-title">🔍 Calculadora de Talla</div>
+    <div class="calc-row">
+      <div class="calc-field">
+        <label>Pecho (cm)</label>
+        <input type="number" id="calc-pecho" placeholder="Ej: 96" min="60" max="140" />
+      </div>
+      <div class="calc-field">
+        <label>Cintura (cm)</label>
+        <input type="number" id="calc-cintura" placeholder="Ej: 80" min="55" max="130" />
+      </div>
+      <div class="calc-field">
+        <label>Cadera (cm)</label>
+        <input type="number" id="calc-cadera" placeholder="Ej: 98" min="60" max="140" />
+      </div>
+      <div class="calc-field">
+        <label>Prenda</label>
+        <select id="calc-prenda">
+          <option value="top">Camiseta / Top</option>
+          <option value="hoodie">Hoodie / Buzo</option>
+          <option value="pantalon">Pantalón / Cargo</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-calc" onclick="calcularTalla()">Calcular mi talla →</button>
+    <div class="calc-result" id="calc-result">
+      Tu talla es <span id="calc-talla-result">M</span>
+      <div class="calc-result-sub" id="calc-result-sub"></div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchPanelTalla(this,'panel-tops')">Camisetas</button>
+    <button class="tab" onclick="switchPanelTalla(this,'panel-hoodies')">Hoodies</button>
+    <button class="tab" onclick="switchPanelTalla(this,'panel-pantalon')">Pantalones</button>
+    <button class="tab" onclick="switchPanelTalla(this,'panel-accesorios')">Accesorios</button>
+  </div>
+
+  <!-- UNIDADES -->
+  <div class="units-toggle">
+    Unidades:
+    <button class="unit-btn active" id="btn-cm" onclick="setUnits('cm')">CM</button>
+    <button class="unit-btn" id="btn-in" onclick="setUnits('in')">PULGADAS</button>
+  </div>
+
+  <!-- CAMISETAS -->
+  <div class="panel active" id="panel-tops">
+    <div class="tip-box">
+      <div class="tip-icon">💡</div>
+      <div class="tip-text"><strong>Corte Oversize:</strong> Las camisetas Dezster tienen corte oversize. Si prefieres un ajuste más ceñido, puedes bajar una talla. Si te gustan bien holgadas, quédate con tu talla habitual.</div>
+    </div>
+    <div class="tabla-wrap">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Medida</th>
+            <th class="talla-cell">XS</th>
+            <th class="talla-cell">S</th>
+            <th class="talla-cell">M</th>
+            <th class="talla-cell">L</th>
+            <th class="talla-cell">XL</th>
+            <th class="talla-cell">XXL</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-tops">
+          <tr><td>Pecho</td><td>84–88</td><td>88–92</td><td>92–96</td><td>96–100</td><td>100–106</td><td>106–112</td></tr>
+          <tr><td>Largo prenda</td><td>65</td><td>67</td><td>70</td><td>72</td><td>74</td><td>76</td></tr>
+          <tr><td>Hombros</td><td>42</td><td>44</td><td>46</td><td>48</td><td>50</td><td>52</td></tr>
+          <tr><td>Manga</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px;color:var(--gray)">* Medidas en centímetros. Puede haber variación de ±2 cm según la prenda.</p>
+  </div>
+
+  <!-- HOODIES -->
+  <div class="panel" id="panel-hoodies">
+    <div class="tip-box">
+      <div class="tip-icon">💡</div>
+      <div class="tip-text"><strong>Corte Relajado:</strong> Los hoodies Dezster son de corte relajado. Son ideales para usar solos o sobre una camiseta. Toma tu talla habitual.</div>
+    </div>
+    <div class="tabla-wrap">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Medida</th>
+            <th class="talla-cell">XS</th>
+            <th class="talla-cell">S</th>
+            <th class="talla-cell">M</th>
+            <th class="talla-cell">L</th>
+            <th class="talla-cell">XL</th>
+            <th class="talla-cell">XXL</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-hoodies">
+          <tr><td>Pecho</td><td>88–92</td><td>92–96</td><td>96–100</td><td>100–106</td><td>106–112</td><td>112–118</td></tr>
+          <tr><td>Largo prenda</td><td>62</td><td>64</td><td>67</td><td>69</td><td>71</td><td>73</td></tr>
+          <tr><td>Hombros</td><td>44</td><td>46</td><td>48</td><td>50</td><td>52</td><td>54</td></tr>
+          <tr><td>Manga (total)</td><td>58</td><td>60</td><td>62</td><td>64</td><td>66</td><td>68</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PANTALONES -->
+  <div class="panel" id="panel-pantalon">
+    <div class="tip-box">
+      <div class="tip-icon">💡</div>
+      <div class="tip-text"><strong>Fit Cargo:</strong> Los pantalones Dezster tienen corte cargo holgado. Mide tu cintura natural y tu cadera para elegir la talla correcta.</div>
+    </div>
+    <div class="tabla-wrap">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Medida</th>
+            <th class="talla-cell">XS</th>
+            <th class="talla-cell">S</th>
+            <th class="talla-cell">M</th>
+            <th class="talla-cell">L</th>
+            <th class="talla-cell">XL</th>
+            <th class="talla-cell">XXL</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-pantalon">
+          <tr><td>Cintura</td><td>70–74</td><td>74–78</td><td>78–82</td><td>82–86</td><td>86–92</td><td>92–98</td></tr>
+          <tr><td>Cadera</td><td>88–92</td><td>92–96</td><td>96–100</td><td>100–104</td><td>104–110</td><td>110–116</td></tr>
+          <tr><td>Largo interno</td><td>74</td><td>76</td><td>78</td><td>80</td><td>82</td><td>82</td></tr>
+          <tr><td>Tiro</td><td>28</td><td>29</td><td>30</td><td>31</td><td>32</td><td>33</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ACCESORIOS -->
+  <div class="panel" id="panel-accesorios">
+    <div class="tip-box">
+      <div class="tip-icon">💡</div>
+      <div class="tip-text"><strong>Talla única:</strong> Gorros, caps y snapbacks Dezster son de talla única con ajuste regulable. Fit para circunferencia de cabeza entre 54 y 60 cm.</div>
+    </div>
+    <div class="tabla-wrap">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Accesorio</th>
+            <th>Talla</th>
+            <th>Ajuste</th>
+            <th>Circunferencia cabeza</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Snapback DZT</td><td class="talla-cell">Única</td><td>Snapback regulable</td><td>54 — 60 cm</td></tr>
+          <tr><td>Cap Curvo DZT</td><td class="talla-cell">Única</td><td>Correa ajustable</td><td>54 — 60 cm</td></tr>
+          <tr><td>Beanie DZT</td><td class="talla-cell">Única</td><td>Elástico</td><td>Todas las tallas</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CÓMO MEDIR -->
+  <div style="margin-top:64px;padding-top:48px;border-top:1px solid var(--border)">
+    <p class="eyebrow">— Guía de medición</p>
+    <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;text-transform:uppercase;margin-bottom:32px">Cómo Tomar tus Medidas</h2>
+    <div class="como-medir">
+      <div class="medida-item">
+        <div class="medida-num">01</div>
+        <div class="medida-info">
+          <h4>Pecho</h4>
+          <p>Pasa la cinta métrica por la parte más ancha de tu pecho, justo bajo las axilas. Mantén la cinta horizontal y no la aprietes.</p>
+        </div>
+      </div>
+      <div class="medida-item">
+        <div class="medida-num">02</div>
+        <div class="medida-info">
+          <h4>Cintura</h4>
+          <p>Mide en la parte más estrecha de tu torso, generalmente 2 cm sobre el ombligo. No metas el estómago.</p>
+        </div>
+      </div>
+      <div class="medida-item">
+        <div class="medida-num">03</div>
+        <div class="medida-info">
+          <h4>Cadera</h4>
+          <p>Mide en la parte más ancha de tus caderas y glúteos. Generalmente entre 18 y 23 cm bajo la cintura.</p>
+        </div>
+      </div>
+      <div class="medida-item">
+        <div class="medida-num">04</div>
+        <div class="medida-info">
+          <h4>Hombros</h4>
+          <p>Mide de un extremo del hombro al otro, por la espalda. De punta a punta de los huesos del hombro.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="mini-footer">
+  <span>© 2025 Dezster Chile</span>
+  <span>Calama, Chile</span>
+</div>
+
+<script>
+  // Unidades CM / Pulgadas
+  let unidadActual = 'cm';
+  const datosCm = {
+    tops: [
+      ['Pecho','84–88','88–92','92–96','96–100','100–106','106–112'],
+      ['Largo prenda','65','67','70','72','74','76'],
+      ['Hombros','42','44','46','48','50','52'],
+      ['Manga','18','19','20','21','22','23'],
+    ],
+    hoodies: [
+      ['Pecho','88–92','92–96','96–100','100–106','106–112','112–118'],
+      ['Largo prenda','62','64','67','69','71','73'],
+      ['Hombros','44','46','48','50','52','54'],
+      ['Manga (total)','58','60','62','64','66','68'],
+    ],
+    pantalon: [
+      ['Cintura','70–74','74–78','78–82','82–86','86–92','92–98'],
+      ['Cadera','88–92','92–96','96–100','100–104','104–110','110–116'],
+      ['Largo interno','74','76','78','80','82','82'],
+      ['Tiro','28','29','30','31','32','33'],
+    ],
+  };
+
+  function cmToIn(val) {
+    return val.split('–').map(v => (parseFloat(v) / 2.54).toFixed(1)).join('–');
+  }
+
+  function renderTabla(tablaId, data, unidad) {
+    const tbody = document.getElementById(tablaId);
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    data.forEach(row => {
+      const cells = row.map((cell, i) => {
+        if (i === 0) return `<td>${cell}</td>`;
+        const val = unidad === 'in' && !isNaN(parseFloat(cell)) ? cmToIn(cell) : cell;
+        return `<td>${val}</td>`;
+      }).join('');
+      tbody.innerHTML += `<tr>${cells}</tr>`;
+    });
+  }
+
+  function setUnits(unit) {
+    unidadActual = unit;
+    document.getElementById('btn-cm').classList.toggle('active', unit === 'cm');
+    document.getElementById('btn-in').classList.toggle('active', unit === 'in');
+    renderTabla('tabla-tops', datosCm.tops, unit);
+    renderTabla('tabla-hoodies', datosCm.hoodies, unit);
+    renderTabla('tabla-pantalon', datosCm.pantalon, unit);
+  }
+
+  function switchPanelTalla(btn, panelId) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(panelId).classList.add('active');
+  }
+
+  // Calculadora de talla
+  function calcularTalla() {
+    const pecho   = parseFloat(document.getElementById('calc-pecho').value)   || 0;
+    const cintura = parseFloat(document.getElementById('calc-cintura').value) || 0;
+    const cadera  = parseFloat(document.getElementById('calc-cadera').value)  || 0;
+    const prenda  = document.getElementById('calc-prenda').value;
+
+    let talla = '';
+    let descripcion = '';
+
+    if (prenda === 'top' || prenda === 'hoodie') {
+      if      (pecho < 88)  { talla = 'XS'; descripcion = 'Pecho 84–88 cm'; }
+      else if (pecho < 92)  { talla = 'S';  descripcion = 'Pecho 88–92 cm'; }
+      else if (pecho < 96)  { talla = 'M';  descripcion = 'Pecho 92–96 cm'; }
+      else if (pecho < 100) { talla = 'L';  descripcion = 'Pecho 96–100 cm'; }
+      else if (pecho < 106) { talla = 'XL'; descripcion = 'Pecho 100–106 cm'; }
+      else                  { talla = 'XXL'; descripcion = 'Pecho 106–112 cm'; }
+    } else {
+      const medRef = cintura || cadera;
+      if      (medRef < 74)  { talla = 'XS'; descripcion = 'Cintura 70–74 cm'; }
+      else if (medRef < 78)  { talla = 'S';  descripcion = 'Cintura 74–78 cm'; }
+      else if (medRef < 82)  { talla = 'M';  descripcion = 'Cintura 78–82 cm'; }
+      else if (medRef < 86)  { talla = 'L';  descripcion = 'Cintura 82–86 cm'; }
+      else if (medRef < 92)  { talla = 'XL'; descripcion = 'Cintura 86–92 cm'; }
+      else                   { talla = 'XXL'; descripcion = 'Cintura 92–98 cm'; }
+    }
+
+    if (!talla) { alert('Ingresa al menos una medida.'); return; }
+
+    document.getElementById('calc-talla-result').textContent = talla;
+    document.getElementById('calc-result-sub').textContent = descripcion + ' · Si estás entre dos tallas, sube una.';
+    document.getElementById('calc-result').style.display = 'block';
+  }
+</script>
+</body>
+</html>
