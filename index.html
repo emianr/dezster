@@ -1771,7 +1771,7 @@
       Nacimos en Calama con una idea simple: hacer ropa que se sienta tuya.
       Sin reglas de género, sin temporadas, solo drops que importan.
     </p>
-    <button class="btn-black" onclick="window.location.href='historia.html'">Nuestra Historia →</button>
+    <button class="btn-black" onclick="navegarA('historia.html')">Nuestra Historia →</button>
   </div>
   <div class="feat-img">
     <img src="images/editorial.jpg" alt="Dezster Editorial" />
@@ -1804,7 +1804,7 @@
           la noche y la actitud sin filtros de Dezster.
           Negro y rojo. Sin piedad.
         </p>
-        <button class="char-btn btn-diablood" onclick="window.location.href='diablood.html'">Ver Colección Diablood →</button>
+        <button class="char-btn btn-diablood" onclick="navegarA('diablood.html')">Ver Colección Diablood →</button>
       </div>
     </div>
 
@@ -1821,7 +1821,7 @@
           fuerza y energía al universo Dezster.
           Amarillo y blanco. Sin límites.
         </p>
-        <button class="char-btn btn-kyros" onclick="window.location.href='kyros.html'">Ver Colección Kyros →</button>
+        <button class="char-btn btn-kyros" onclick="navegarA('kyros.html')">Ver Colección Kyros →</button>
       </div>
     </div>
 
@@ -2382,6 +2382,17 @@
 
   /* Bloquear scroll mientras intro está visible */
   document.body.style.overflow = 'hidden';
+
+  /* ══════════════════════════════════════
+     NAVEGACIÓN ENTRE PÁGINAS
+  ══════════════════════════════════════ */
+  function navegarA(pagina) {
+    // Obtener la base de la URL actual (sin el archivo)
+    const base = window.location.href
+      .replace(/\/[^\/]*$/, '/')  // quitar el archivo actual
+      .replace(/\/$/, '/');       // asegurar que termina en /
+    window.location.href = base + pagina;
+  }
 
   /* ══════════════════════════════════════
      COUNTDOWN PREVENTA
