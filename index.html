@@ -202,6 +202,54 @@
       );
     }
 
+    /* ════════════════════════════════════════
+       PREVENTA
+    ════════════════════════════════════════ */
+    .preventa-banner {
+      background: #1a0000; padding: 12px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(232,0,13,.3); gap: 16px; flex-wrap: wrap;
+    }
+    .preventa-left { display: flex; align-items: center; gap: 14px; }
+    .preventa-badge {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 5px;
+      background: var(--red); color: var(--black);
+      padding: 5px 12px; text-transform: uppercase; flex-shrink: 0;
+    }
+    .preventa-text {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px; font-weight: 700; letter-spacing: 2px;
+      color: var(--white); text-transform: uppercase;
+    }
+    .preventa-text span { color: var(--red); }
+    .preventa-countdown { display: flex; gap: 8px; align-items: center; }
+    .countdown-unit { text-align: center; min-width: 44px; }
+    .countdown-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px; font-weight: 900; color: var(--white);
+      line-height: 1; display: block;
+    }
+    .countdown-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 8px; font-weight: 700; letter-spacing: 2px;
+      color: var(--gray); text-transform: uppercase;
+    }
+    .countdown-sep {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 22px; font-weight: 900; color: var(--red);
+      line-height: 1; margin-bottom: 10px;
+    }
+    .badge-preventa { background: #1a0000 !important; color: var(--red) !important; border: 1px solid var(--red) !important; }
+    .prod-preventa-note {
+      font-size: 10px; color: var(--red); letter-spacing: 2px;
+      margin-top: 5px; font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700; text-transform: uppercase;
+    }
+    @media (max-width:768px) {
+      .preventa-banner { padding: 12px 20px; }
+      .preventa-text { font-size: 11px; }
+    }
 
     .ann-bar {
       background: var(--red);
@@ -1434,6 +1482,37 @@
 </div>
 
 <!-- ══════════════════════════════════════
+     BANNER PREVENTA
+══════════════════════════════════════ -->
+<div class="preventa-banner">
+  <div class="preventa-left">
+    <span class="preventa-badge">🔥 Preventa</span>
+    <span class="preventa-text">Drop 001 — <span>Stock limitado · Envío post confirmación</span></span>
+  </div>
+  <div class="preventa-countdown">
+    <div class="countdown-unit">
+      <span class="countdown-num" id="cd-dias">00</span>
+      <span class="countdown-label">Días</span>
+    </div>
+    <span class="countdown-sep">:</span>
+    <div class="countdown-unit">
+      <span class="countdown-num" id="cd-horas">00</span>
+      <span class="countdown-label">Horas</span>
+    </div>
+    <span class="countdown-sep">:</span>
+    <div class="countdown-unit">
+      <span class="countdown-num" id="cd-min">00</span>
+      <span class="countdown-label">Min</span>
+    </div>
+    <span class="countdown-sep">:</span>
+    <div class="countdown-unit">
+      <span class="countdown-num" id="cd-seg">00</span>
+      <span class="countdown-label">Seg</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
      ANNOUNCEMENT BAR
 ══════════════════════════════════════ -->
 <div class="ann-bar">
@@ -1584,54 +1663,16 @@
         Copia un bloque .carousel-slide y cambia la imagen, nombre y precio.
         Puedes tener todos los que quieras.
       -->
-      <div class="carousel-slide">
-        <div class="carousel-slide-img"><img src="images/void-tee.jpg" alt="DZT Void Tee" /></div>
-        <div class="carousel-slide-info">
-          <div class="carousel-slide-cat">Camiseta · Unisex</div>
-          <div class="carousel-slide-name">DZT Void Tee</div>
-          <div class="carousel-slide-price">$24.990</div>
-        </div>
-      </div>
-      <div class="carousel-slide">
-        <div class="carousel-slide-img"><img src="images/arch-hood.jpg" alt="DZT Arch Hood" /></div>
-        <div class="carousel-slide-info">
-          <div class="carousel-slide-cat">Hoodie · Unisex</div>
-          <div class="carousel-slide-name">DZT Arch Hood</div>
-          <div class="carousel-slide-price">$49.990</div>
-        </div>
-      </div>
-      <div class="carousel-slide">
-        <div class="carousel-slide-img"><img src="images/cargo-001.jpg" alt="DZT Cargo 001" /></div>
-        <div class="carousel-slide-info">
-          <div class="carousel-slide-cat">Pantalón · Unisex</div>
-          <div class="carousel-slide-name">DZT Cargo 001</div>
-          <div class="carousel-slide-price">$39.990</div>
-        </div>
-      </div>
-      <div class="carousel-slide">
-        <div class="carousel-slide-img"><img src="images/snapback.jpg" alt="DZT Snapback" /></div>
-        <div class="carousel-slide-info">
-          <div class="carousel-slide-cat">Accesorio · Unisex</div>
-          <div class="carousel-slide-name">DZT Snapback</div>
-          <div class="carousel-slide-price">$14.990</div>
-        </div>
-      </div>
-      <div class="carousel-slide">
-        <div class="carousel-slide-img"><img src="images/void-tee.jpg" alt="DZT Void Tee" /></div>
-        <div class="carousel-slide-info">
-          <div class="carousel-slide-cat">Camiseta · Mujer</div>
-          <div class="carousel-slide-name">DZT Void Tee Mujer</div>
-          <div class="carousel-slide-price">$24.990</div>
-        </div>
-      </div>
-      <div class="carousel-slide">
-        <div class="carousel-slide-img"><img src="images/arch-hood.jpg" alt="DZT Hood Mujer" /></div>
-        <div class="carousel-slide-info">
-          <div class="carousel-slide-cat">Hoodie · Mujer</div>
-          <div class="carousel-slide-name">DZT Hood Mujer</div>
-          <div class="carousel-slide-price">$49.990</div>
-        </div>
-      </div>
+      <div class="carousel-slide"><div class="carousel-slide-img"><img src="images/tee-mafia-front.png" alt="DZT Mafia Tee" /></div><div class="carousel-slide-info"><div class="carousel-slide-cat">Camiseta · Kyros</div><div class="carousel-slide-name">DZT Mafia Tee</div><div class="carousel-slide-price">$21.000</div></div></div>
+      <div class="carousel-slide"><div class="carousel-slide-img"><img src="images/tee-culture-front.png" alt="DZT Culture Tee" /></div><div class="carousel-slide-info"><div class="carousel-slide-cat">Camiseta · Unisex</div><div class="carousel-slide-name">DZT Culture Tee</div><div class="carousel-slide-price">$21.000</div></div></div>
+      <div class="carousel-slide"><div class="carousel-slide-img"><img src="images/tee-dezster-front.png" alt="DZT Script Tee" /></div><div class="carousel-slide-info"><div class="carousel-slide-cat">Camiseta · Unisex</div><div class="carousel-slide-name">DZT Script Tee</div><div class="carousel-slide-price">$21.000</div></div></div>
+      <div class="carousel-slide"><div class="carousel-slide-img"><img src="images/tee-champions-back.png" alt="DZT Champions Tee" /></div><div class="carousel-slide-info"><div class="carousel-slide-cat">Camiseta · Unisex</div><div class="carousel-slide-name">DZT Champions Tee</div><div class="carousel-slide-price">$21.000</div></div></div>
+      <div class="carousel-slide"><div class="carousel-slide-img"><img src="images/tee-mask-front.png" alt="DZT NorthSide Mask" /></div><div class="carousel-slide-info"><div class="carousel-slide-cat">Camiseta · Diablood</div><div class="carousel-slide-name">DZT NorthSide Mask</div><div class="carousel-slide-price">$21.000</div></div></div>
+      <div class="carousel-slide"><div class="carousel-slide-img"><img src="images/tee-northside-back.png" alt="DZT NorthSide Culture" /></div><div class="carousel-slide-info"><div class="carousel-slide-cat">Camiseta · Unisex</div><div class="carousel-slide-name">DZT NorthSide Culture</div><div class="carousel-slide-price">$21.000</div></div></div>
+      <div class="carousel-slide"><div class="carousel-slide-img"><img src="images/tee-ghost-front.png" alt="DZT Ghost D Tee" /></div><div class="carousel-slide-info"><div class="carousel-slide-cat">Camiseta · Diablood</div><div class="carousel-slide-name">DZT Ghost D Tee</div><div class="carousel-slide-price">$21.000</div></div></div>
+      <div class="carousel-slide"><div class="carousel-slide-img"><img src="images/tee-kyros-back.png" alt="DZT Kyros Culture" /></div><div class="carousel-slide-info"><div class="carousel-slide-cat">Camiseta · Kyros</div><div class="carousel-slide-name">DZT Kyros Culture</div><div class="carousel-slide-price">$21.000</div></div></div>
+      <div class="carousel-slide"><div class="carousel-slide-img"><img src="images/tee-ghost2-front.png" alt="DZT Ghost Flames" /></div><div class="carousel-slide-info"><div class="carousel-slide-cat">Camiseta · Diablood</div><div class="carousel-slide-name">DZT Ghost Flames</div><div class="carousel-slide-price">$21.000</div></div></div>
+      <div class="carousel-slide"><div class="carousel-slide-img"><img src="images/tee-dollar-back.png" alt="DZT Dollar Culture" /></div><div class="carousel-slide-info"><div class="carousel-slide-cat">Camiseta · Unisex</div><div class="carousel-slide-name">DZT Dollar Culture</div><div class="carousel-slide-price">$21.000</div></div></div>
     </div>
   </div>
 
@@ -1664,90 +1705,56 @@
     - La imagen: reemplaza el .ph por <img src="images/producto-X.jpg" alt="..." />
     - El badge: badge-new (Nuevo), badge-drop (Drop), badge-sold (Agotado)
   -->
-  <div class="prod-grid">
+  <div class="prod-grid" style="grid-template-columns:repeat(4,1fr)">
 
-    <!-- PRODUCTO 1 -->
-    <div class="prod-card"
-         data-name="DZT Void Tee"
-         data-price="24.990"
-         data-cat="Camiseta"
-         data-desc="Camiseta oversize de algodón pesado. Serigrafía exclusiva del Drop 001. Disponible en tallas S al XL."
-         onclick="openProduct(this)">
-      <div class="prod-img">
-        <img src="images/void-tee.jpg" alt="DZT Void Tee" />
-        <div class="prod-badge badge-new">New</div>
-      </div>
-      <div class="prod-info">
-        <p class="prod-cat">Camiseta</p>
-        <p class="prod-name">DZT Void Tee</p>
-        <div class="prod-footer">
-          <span class="prod-price">$24.990</span>
-          <button class="prod-add">+ Ver</button>
-        </div>
-      </div>
+    <div class="prod-card" data-name="DZT Mafia Tee" data-price="21.000" data-cat="Camiseta · Kyros" data-desc="Camiseta oversize negra. Personaje Kyros/Mafia al frente + D llameante al pecho. Algodón pesado 220g. Corte unisex." data-img="images/tee-mafia-front.png" onclick="openProduct(this)">
+      <div class="prod-img"><img src="images/tee-mafia-front.png" alt="DZT Mafia Tee" /><div class="prod-badge badge-preventa">Preventa</div></div>
+      <div class="prod-info"><p class="prod-cat">Camiseta · Kyros</p><p class="prod-name">DZT Mafia Tee</p><div class="prod-footer"><span class="prod-price">$21.000</span><button class="prod-add">+ Ver</button></div><p class="prod-preventa-note">⚡ Preventa</p></div>
     </div>
 
-    <!-- PRODUCTO 2 -->
-    <div class="prod-card"
-         data-name="DZT Arch Hood"
-         data-price="49.990"
-         data-cat="Hoodie"
-         data-desc="Hoodie de algodón 400g, corte relajado. Logo bordado al pecho. Unisex."
-         onclick="openProduct(this)">
-      <div class="prod-img">
-        <img src="images/arch-hood.jpg" alt="DZT Arch Hood" />
-        <div class="prod-badge badge-drop">Drop</div>
-      </div>
-      <div class="prod-info">
-        <p class="prod-cat">Hoodie</p>
-        <p class="prod-name">DZT Arch Hood</p>
-        <div class="prod-footer">
-          <span class="prod-price">$49.990</span>
-          <button class="prod-add">+ Ver</button>
-        </div>
-      </div>
+    <div class="prod-card" data-name="DZT Culture Tee" data-price="21.000" data-cat="Camiseta · Unisex" data-desc="Camiseta oversize negra. Texto Dezster Culture en blackletter con arte urbano de fondo." data-img="images/tee-culture-front.png" onclick="openProduct(this)">
+      <div class="prod-img"><img src="images/tee-culture-front.png" alt="DZT Culture Tee" /><div class="prod-badge badge-preventa">Preventa</div></div>
+      <div class="prod-info"><p class="prod-cat">Camiseta · Unisex</p><p class="prod-name">DZT Culture Tee</p><div class="prod-footer"><span class="prod-price">$21.000</span><button class="prod-add">+ Ver</button></div><p class="prod-preventa-note">⚡ Preventa</p></div>
     </div>
 
-    <!-- PRODUCTO 3 -->
-    <div class="prod-card"
-         data-name="DZT Cargo 001"
-         data-price="39.990"
-         data-cat="Pantalón"
-         data-desc="Cargo pant con 6 bolsillos. Tela ripstop resistente. Drop exclusivo."
-         onclick="openProduct(this)">
-      <div class="prod-img">
-        <img src="images/cargo-001.jpg" alt="DZT Cargo 001" />
-        <div class="prod-badge badge-new">New</div>
-      </div>
-      <div class="prod-info">
-        <p class="prod-cat">Pantalón</p>
-        <p class="prod-name">DZT Cargo 001</p>
-        <div class="prod-footer">
-          <span class="prod-price">$39.990</span>
-          <button class="prod-add">+ Ver</button>
-        </div>
-      </div>
+    <div class="prod-card" data-name="DZT Script Tee" data-price="21.000" data-cat="Camiseta · Unisex" data-desc="Camiseta oversize negra. Logo Dezster en script con efecto airbrush y glow blanco. Icónica del Drop 001." data-img="images/tee-dezster-front.png" onclick="openProduct(this)">
+      <div class="prod-img"><img src="images/tee-dezster-front.png" alt="DZT Script Tee" /><div class="prod-badge badge-preventa">Preventa</div></div>
+      <div class="prod-info"><p class="prod-cat">Camiseta · Unisex</p><p class="prod-name">DZT Script Tee</p><div class="prod-footer"><span class="prod-price">$21.000</span><button class="prod-add">+ Ver</button></div><p class="prod-preventa-note">⚡ Preventa</p></div>
     </div>
 
-    <!-- PRODUCTO 4 — AGOTADO -->
-    <div class="prod-card"
-         data-name="DZT Snapback"
-         data-price="14.990"
-         data-cat="Accesorio"
-         data-desc="Snapback bordado con logo Dezster. Edición limitada agotada."
-         onclick="openProduct(this)">
-      <div class="prod-img">
-        <img src="images/snapback.jpg" alt="DZT Snapback" />
-        <div class="prod-badge badge-sold">Sold Out</div>
-      </div>
-      <div class="prod-info">
-        <p class="prod-cat">Accesorio</p>
-        <p class="prod-name">DZT Snapback</p>
-        <div class="prod-footer">
-          <span class="prod-price" style="color:var(--gray)">$14.990</span>
-          <button class="prod-add" style="opacity:.4;cursor:not-allowed">Sold</button>
-        </div>
-      </div>
+    <div class="prod-card" data-name="DZT Champions Tee" data-price="21.000" data-cat="Camiseta · Unisex" data-desc="Camiseta oversize negra. Estampado trasero World Stepping Dezster Culture Champions. Pieza icónica del Drop." data-img="images/tee-champions-back.png" onclick="openProduct(this)">
+      <div class="prod-img"><img src="images/tee-champions-back.png" alt="DZT Champions Tee" /><div class="prod-badge badge-preventa">Preventa</div></div>
+      <div class="prod-info"><p class="prod-cat">Camiseta · Unisex</p><p class="prod-name">DZT Champions Tee</p><div class="prod-footer"><span class="prod-price">$21.000</span><button class="prod-add">+ Ver</button></div><p class="prod-preventa-note">⚡ Preventa</p></div>
+    </div>
+
+    <div class="prod-card" data-name="DZT NorthSide Mask" data-price="21.000" data-cat="Camiseta · Diablood" data-desc="Camiseta oversize beige. Ilustración Dezster con máscara estilo urbano. Vintage look. NorthSide." data-img="images/tee-mask-front.png" onclick="openProduct(this)">
+      <div class="prod-img"><img src="images/tee-mask-front.png" alt="DZT NorthSide Mask" /><div class="prod-badge badge-preventa">Preventa</div></div>
+      <div class="prod-info"><p class="prod-cat">Camiseta · Diablood</p><p class="prod-name">DZT NorthSide Mask</p><div class="prod-footer"><span class="prod-price">$21.000</span><button class="prod-add">+ Ver</button></div><p class="prod-preventa-note">⚡ Preventa</p></div>
+    </div>
+
+    <div class="prod-card" data-name="DZT NorthSide Culture" data-price="21.000" data-cat="Camiseta · Unisex" data-desc="Camiseta oversize beige. Estampado trasero Dezster Culture NorthSide en script vintage con splatter rojo. Esencia Calama." data-img="images/tee-northside-back.png" onclick="openProduct(this)">
+      <div class="prod-img"><img src="images/tee-northside-back.png" alt="DZT NorthSide Culture" /><div class="prod-badge badge-preventa">Preventa</div></div>
+      <div class="prod-info"><p class="prod-cat">Camiseta · Unisex</p><p class="prod-name">DZT NorthSide Culture</p><div class="prod-footer"><span class="prod-price">$21.000</span><button class="prod-add">+ Ver</button></div><p class="prod-preventa-note">⚡ Preventa</p></div>
+    </div>
+
+    <div class="prod-card" data-name="DZT Ghost D Tee" data-price="21.000" data-cat="Camiseta · Diablood" data-desc="Camiseta oversize negra. D con llamas al pecho + tag Dezster NorthSide. Viene con hangtag exclusivo máscara fantasma." data-img="images/tee-ghost-front.png" onclick="openProduct(this)">
+      <div class="prod-img"><img src="images/tee-ghost-front.png" alt="DZT Ghost D Tee" /><div class="prod-badge badge-preventa">Preventa</div></div>
+      <div class="prod-info"><p class="prod-cat">Camiseta · Diablood</p><p class="prod-name">DZT Ghost D Tee</p><div class="prod-footer"><span class="prod-price">$21.000</span><button class="prod-add">+ Ver</button></div><p class="prod-preventa-note">⚡ Preventa</p></div>
+    </div>
+
+    <div class="prod-card" data-name="DZT Kyros Culture" data-price="21.000" data-cat="Camiseta · Kyros" data-desc="Camiseta oversize negra. Personaje Kyros con billetes al reverso + Dezster Culture en arco rojo. La pieza del personaje Kyros." data-img="images/tee-kyros-back.png" onclick="openProduct(this)">
+      <div class="prod-img"><img src="images/tee-kyros-back.png" alt="DZT Kyros Culture" /><div class="prod-badge badge-preventa">Preventa</div></div>
+      <div class="prod-info"><p class="prod-cat">Camiseta · Kyros</p><p class="prod-name">DZT Kyros Culture</p><div class="prod-footer"><span class="prod-price">$21.000</span><button class="prod-add">+ Ver</button></div><p class="prod-preventa-note">⚡ Preventa</p></div>
+    </div>
+
+    <div class="prod-card" data-name="DZT Ghost Flames" data-price="21.000" data-cat="Camiseta · Diablood" data-desc="Camiseta oversize negra. D llameante al pecho con estrellas. Tag exclusivo fantasma Dezster NorthSide incluido." data-img="images/tee-ghost2-front.png" onclick="openProduct(this)">
+      <div class="prod-img"><img src="images/tee-ghost2-front.png" alt="DZT Ghost Flames" /><div class="prod-badge badge-preventa">Preventa</div></div>
+      <div class="prod-info"><p class="prod-cat">Camiseta · Diablood</p><p class="prod-name">DZT Ghost Flames</p><div class="prod-footer"><span class="prod-price">$21.000</span><button class="prod-add">+ Ver</button></div><p class="prod-preventa-note">⚡ Preventa</p></div>
+    </div>
+
+    <div class="prod-card" data-name="DZT Dollar Culture" data-price="21.000" data-cat="Camiseta · Unisex" data-desc="Camiseta oversize negra. Texto Dezster Culture repetido en blackletter con símbolo dólar rojo sangre superpuesto." data-img="images/tee-dollar-back.png" onclick="openProduct(this)">
+      <div class="prod-img"><img src="images/tee-dollar-back.png" alt="DZT Dollar Culture" /><div class="prod-badge badge-preventa">Preventa</div></div>
+      <div class="prod-info"><p class="prod-cat">Camiseta · Unisex</p><p class="prod-name">DZT Dollar Culture</p><div class="prod-footer"><span class="prod-price">$21.000</span><button class="prod-add">+ Ver</button></div><p class="prod-preventa-note">⚡ Preventa</p></div>
     </div>
 
   </div>
@@ -1797,7 +1804,7 @@
           la noche y la actitud sin filtros de Dezster.
           Negro y rojo. Sin piedad.
         </p>
-        <button class="char-btn btn-diablood">Ver Colección Diablood →</button>
+        <button class="char-btn btn-diablood" onclick="window.location.href='diablood.html'">Ver Colección Diablood →</button>
       </div>
     </div>
 
@@ -1814,7 +1821,7 @@
           fuerza y energía al universo Dezster.
           Amarillo y blanco. Sin límites.
         </p>
-        <button class="char-btn btn-kyros">Ver Colección Kyros →</button>
+        <button class="char-btn btn-kyros" onclick="window.location.href='kyros.html'">Ver Colección Kyros →</button>
       </div>
     </div>
 
@@ -1833,12 +1840,12 @@
     <button class="see-all">Ver Todas →</button>
   </div>
   <div class="cat-grid">
-    <div class="cat-card big">
+    <div class="cat-card big" onclick="document.getElementById('drops').scrollIntoView({behavior:'smooth'})" style="cursor:pointer">
       <span class="cat-num">01</span>
       <div>
         <div class="cat-line"></div>
         <div class="cat-name">Tops &amp;<br>Camisetas</div>
-        <div class="cat-sub">14 prendas</div>
+        <div class="cat-sub">10 prendas · Drop 001</div>
       </div>
     </div>
     <div class="cat-card">
@@ -1857,20 +1864,20 @@
         <div class="cat-sub">6 prendas</div>
       </div>
     </div>
-    <div class="cat-card">
+    <div class="cat-card" onclick="document.getElementById('drops').scrollIntoView({behavior:'smooth'})" style="cursor:pointer">
       <span class="cat-num">04</span>
       <div>
         <div class="cat-line"></div>
-        <div class="cat-name">Outerwear</div>
-        <div class="cat-sub">4 prendas</div>
+        <div class="cat-name">Diablood</div>
+        <div class="cat-sub">Colección Drop 001</div>
       </div>
     </div>
-    <div class="cat-card">
+    <div class="cat-card" onclick="document.getElementById('drops').scrollIntoView({behavior:'smooth'})" style="cursor:pointer">
       <span class="cat-num">05</span>
       <div>
         <div class="cat-line"></div>
-        <div class="cat-name">Accesorios</div>
-        <div class="cat-sub">12 items</div>
+        <div class="cat-name">Kyros</div>
+        <div class="cat-sub">Colección Drop 001</div>
       </div>
     </div>
   </div>
@@ -2375,6 +2382,37 @@
 
   /* Bloquear scroll mientras intro está visible */
   document.body.style.overflow = 'hidden';
+
+  /* ══════════════════════════════════════
+     COUNTDOWN PREVENTA
+  ══════════════════════════════════════ */
+  (function initCountdown() {
+    // Fecha fin de preventa — 15 días desde hoy
+    const fin = new Date();
+    fin.setDate(fin.getDate() + 15);
+    fin.setHours(23, 59, 59, 0);
+
+    function update() {
+      const ahora = new Date();
+      const diff  = fin - ahora;
+      if (diff <= 0) {
+        document.querySelectorAll('.countdown-num').forEach(el => el.textContent = '00');
+        return;
+      }
+      const dias  = Math.floor(diff / 86400000);
+      const horas = Math.floor((diff % 86400000) / 3600000);
+      const min   = Math.floor((diff % 3600000) / 60000);
+      const seg   = Math.floor((diff % 60000) / 1000);
+
+      const pad = n => String(n).padStart(2, '0');
+      document.getElementById('cd-dias').textContent  = pad(dias);
+      document.getElementById('cd-horas').textContent = pad(horas);
+      document.getElementById('cd-min').textContent   = pad(min);
+      document.getElementById('cd-seg').textContent   = pad(seg);
+    }
+    update();
+    setInterval(update, 1000);
+  })();
 
   /* ── MENÚ HAMBURGUESA ── */
   function toggleMenu() {
