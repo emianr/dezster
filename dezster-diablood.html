@@ -63,7 +63,7 @@
     .btn-red:hover { background: #ff1a24; transform: translateY(-2px); }
     .hero-right { background: var(--black2); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; min-height: 600px; }
     .hero-right img { width: 100%; height: 100%; object-fit: cover; opacity: .85; }
-    .hero-right::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, rgba(8,8,8,.6) 0%, transparent 50%); }
+    /* hero-right overlay removed */
     .hero-placeholder { display: flex; flex-direction: column; align-items: center; gap: 12px; }
     .hero-placeholder .ph-icon { font-size: 80px; opacity: .06; }
     .hero-placeholder p { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; letter-spacing: 5px; color: #1a1a1a; text-transform: uppercase; }
@@ -167,16 +167,8 @@
     </p>
     <a href="#prendas"><button class="btn-red">Ver Prendas Diablood →</button></a>
   </div>
-  <div class="hero-right">
-    <!--
-      ✅ IMAGEN DIABLOOD:
-      Reemplaza este bloque con:
-      <img src="images/diablood.png" alt="Diablood" />
-    -->
-    <div class="hero-placeholder">
-      <div class="ph-icon">☠</div>
-      <p>Ilustración Diablood</p>
-    </div>
+  <div class="hero-right" style="background:#0a0000;">
+    <img src="images/diablood-personaje.jpg" alt="Diablood" style="width:100%;height:100%;object-fit:cover;object-position:center top;opacity:.95;" />
   </div>
 </div>
 
@@ -203,11 +195,6 @@
       <div class="color-desc">Luz y sombra · Calle y arte</div>
     </div>
   </div>
-</div>
-
-<!-- IMAGEN PERSONAJE -->
-<div class="char-img-section">
-  <img src="images/diablood-personaje.jpg" alt="Diablood — Dezster Chile" />
 </div>
 
 <!-- HISTORIA -->
