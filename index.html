@@ -2707,17 +2707,17 @@
   // Enviar datos al Google Sheets (en segundo plano, no bloquea el flujo)
   async function registrarEnSheets(datos) {
     try {
-      // Google Apps Script requiere FormData con no-cors
-      const form = new FormData();
-      form.append('data', JSON.stringify(datos));
+      const params = new URLSearchParams();
+      params.append('data', JSON.stringify(datos));
       await fetch(SHEETS_URL, {
         method: 'POST',
         mode: 'no-cors',
-        body: form,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params.toString(),
       });
       console.log('Registrado en Sheets OK');
     } catch(err) {
-      console.log('Sheets error (no crítico):', err.message);
+      console.log('Sheets error:', err.message);
     }
   }
 
