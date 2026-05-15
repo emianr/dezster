@@ -737,6 +737,10 @@
 
     <div id="tablero-info" style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:16px">Movimientos: <span id="mov-count">0</span> / 3</div>
     <div id="tablero-msg" style="font-size:15px;font-style:italic;color:var(--cream);margin-bottom:20px;min-height:24px"></div>
+    <div style="display:flex;gap:12px;justify-content:center;margin-bottom:12px">
+      <button onclick="moverKyros(-1)" style="font-family:'Cinzel',serif;font-size:16px;background:rgba(201,168,76,.1);border:1px solid var(--border);color:var(--gold);width:52px;height:52px;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">←</button>
+      <button onclick="moverKyros(1)" style="font-family:'Cinzel',serif;font-size:16px;background:rgba(201,168,76,.1);border:1px solid var(--border);color:var(--gold);width:52px;height:52px;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">→</button>
+    </div>
     <button onclick="resetTablero()" style="font-family:'Cinzel',serif;font-size:11px;font-weight:600;letter-spacing:4px;background:none;border:1px solid var(--border);color:var(--silver);padding:10px 24px;cursor:pointer;text-transform:uppercase;transition:all .3s" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--silver)'">↺ Reiniciar</button>
 
     <!-- CÓDIGO SECRETO — aparece al ganar -->
@@ -842,32 +846,20 @@ function actualizarCruces() {
 }
 
 // ══════════════════════════════════════
-//  TABLERO DEL DESTINO
+//  TABLERO DEL DESTINO — versión simplificada
+//  Tablero 4 celdas en línea: [Kyros][libre][libre][Salida]
+//  Usa las flechas → para mover. 3 clics = victoria
 // ══════════════════════════════════════
-// Grid 5x5 — 0=libre, 1=bloqueo, 2=kyros, 3=salida
-const TABLERO_INICIAL = [
-  [1, 1, 1, 1, 1],
-  [1, 0, 1, 0, 1],
-  [2, 0, 0, 0, 3],
-  [1, 0, 1, 0, 1],
-  [1, 1, 1, 1, 1],
-];
-// Solución: clic en Kyros → derecha → derecha → derecha = 3 movimientos
-
-let tableroState = [];
-let kyrosPos = {r:2, c:0};
+let posKyros = 0; // 0=inicio, 3=salida
 let movimientos = 0;
 let juegoTerminado = false;
 
-function cloneTablero(t) { return t.map(r => [...r]); }
-
 function resetTablero() {
-  tableroState = cloneTablero(TABLERO_INICIAL);
-  kyrosPos = {r:2, c:0};
+  posKyros = 0;
   movimientos = 0;
   juegoTerminado = false;
   document.getElementById('mov-count').textContent = '0';
-  document.getElementById('tablero-msg').textContent = '';
+  document.getElementById('tablero-msg').innerHTML = 'Usa los botones para mover a Kyros hacia la salida ✝';
   document.getElementById('codigo-secreto').style.display = 'none';
   renderTablero();
 }
@@ -875,86 +867,63 @@ function resetTablero() {
 function renderTablero() {
   const grid = document.getElementById('tablero-grid');
   if (!grid) return;
+  // Tablero lineal de 4 celdas
+  grid.style.gridTemplateColumns = 'repeat(4, 70px)';
+  grid.style.gridTemplateRows = '70px';
   grid.innerHTML = '';
-  for (let r = 0; r < 5; r++) {
-    for (let c = 0; c < 5; c++) {
-      const cell = document.createElement('div');
-      cell.style.cssText = 'width:60px;height:60px;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;transition:all .2s;border-radius:2px;';
-      const val = tableroState[r][c];
-      if (val === 1) {
-        cell.style.background = 'rgba(201,168,76,.08)';
-        cell.innerHTML = '<span style="color:rgba(201,168,76,.2);font-size:14px">⚔</span>';
-      } else if (val === 2) {
-        cell.style.background = 'rgba(201,168,76,.2)';
-        cell.style.border = '1px solid rgba(201,168,76,.5)';
-        cell.innerHTML = '<span style="color:#C9A84C;text-shadow:0 0 12px rgba(201,168,76,.8)">✦</span>';
-        cell.onclick = () => seleccionarKyros(r, c);
-      } else if (val === 3) {
-        cell.style.background = 'rgba(245,245,245,.05)';
-        cell.style.border = '1px solid rgba(245,245,245,.2)';
-        cell.innerHTML = '<span style="color:rgba(245,245,245,.6)">✝</span>';
-      } else {
-        cell.style.background = 'rgba(255,255,255,.02)';
-        if (kyrosSeleccionado) {
-          cell.style.background = 'rgba(201,168,76,.05)';
-          cell.style.cursor = 'pointer';
-          cell.onclick = () => moverKyros(r, c);
-        }
-      }
-      grid.appendChild(cell);
+  const labels = ['Inicio', '', '', 'Salida'];
+  for (let i = 0; i < 4; i++) {
+    const cell = document.createElement('div');
+    cell.style.cssText = 'width:70px;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-radius:2px;transition:all .3s;';
+    if (i === posKyros && i === 3) {
+      // Kyros llegó a la salida
+      cell.style.background = 'rgba(201,168,76,.3)';
+      cell.style.border = '2px solid #C9A84C';
+      cell.innerHTML = '<span style="font-size:26px">✦</span><span style="font-family:Cinzel,serif;font-size:8px;letter-spacing:2px;color:#C9A84C">¡META!</span>';
+    } else if (i === posKyros) {
+      cell.style.background = 'rgba(201,168,76,.15)';
+      cell.style.border = '1px solid rgba(201,168,76,.6)';
+      cell.innerHTML = '<span style="font-size:26px;color:#C9A84C;text-shadow:0 0 16px rgba(201,168,76,.8)">✦</span><span style="font-family:Cinzel,serif;font-size:8px;letter-spacing:2px;color:rgba(201,168,76,.6)">KYROS</span>';
+    } else if (i === 3) {
+      cell.style.background = 'rgba(245,245,245,.04)';
+      cell.style.border = '1px solid rgba(245,245,245,.25)';
+      cell.innerHTML = '<span style="font-size:26px;color:rgba(245,245,245,.7)">✝</span><span style="font-family:Cinzel,serif;font-size:8px;letter-spacing:2px;color:rgba(245,245,245,.4)">SALIDA</span>';
+    } else {
+      cell.style.background = 'rgba(255,255,255,.02)';
+      cell.style.border = '1px solid rgba(201,168,76,.1)';
+      cell.innerHTML = '<span style="font-size:14px;color:rgba(201,168,76,.15)">·</span>';
     }
+    grid.appendChild(cell);
   }
 }
 
-let kyrosSeleccionado = false;
-
-function seleccionarKyros(r, c) {
+function moverKyros(dir) {
   if (juegoTerminado) return;
-  kyrosSeleccionado = true;
-  document.getElementById('tablero-msg').textContent = 'Kyros listo — elige hacia dónde moverlo';
+  const nueva = posKyros + dir;
+  if (nueva < 0 || nueva > 3) {
+    document.getElementById('tablero-msg').innerHTML = '<span style="color:rgba(232,0,13,.7)">No puedes salir del tablero.</span>';
+    return;
+  }
+  posKyros = nueva;
+  movimientos++;
+  document.getElementById('mov-count').textContent = movimientos;
   renderTablero();
-}
-
-function moverKyros(r, c) {
-  if (!kyrosSeleccionado || juegoTerminado) return;
-  // Validar movimiento: solo adyacente y no bloqueado
-  const dr = Math.abs(r - kyrosPos.r);
-  const dc = Math.abs(c - kyrosPos.c);
-  if ((dr === 1 && dc === 0) || (dr === 0 && dc === 1)) {
-    if (tableroState[r][c] !== 1) {
-      const esGol = tableroState[r][c] === 3;
-      tableroState[kyrosPos.r][kyrosPos.c] = 0;
-      tableroState[r][c] = 2;
-      kyrosPos = {r, c};
-      movimientos++;
-      kyrosSeleccionado = false;
-      document.getElementById('mov-count').textContent = movimientos;
-      renderTablero();
-      if (esGol) {
-        juegoTerminado = true;
-        if (movimientos <= 3) {
-          document.getElementById('tablero-msg').innerHTML = '<span style="color:#C9A84C">✦ ¡Jerusalén está a salvo! Has demostrado tu voluntad.</span>';
-          document.getElementById('codigo-secreto').style.display = 'block';
-          encontrarCruz(3); // Cruz 3 se desbloquea al ganar
-          mostrarToast('✦ Código WILLOFIRON desbloqueado');
-        } else {
-          document.getElementById('tablero-msg').innerHTML = '<span style="color:#E8000D">El camino se abrió, pero usaste ' + movimientos + ' movimientos. El rey esperaba más. Reinicia e intenta en 3.</span>';
-        }
-      } else if (movimientos >= 3 && !esGol) {
-        juegoTerminado = true;
-        document.getElementById('tablero-msg').innerHTML = '<span style="color:#E8000D">Movimientos agotados. El asedio continúa. ↺ Reinicia y repiensa tu estrategia.</span>';
-      } else {
-        document.getElementById('tablero-msg').textContent = 'Buen movimiento. Continúa...';
-      }
+  if (posKyros === 3) {
+    juegoTerminado = true;
+    if (movimientos <= 3) {
+      document.getElementById('tablero-msg').innerHTML = '<span style="color:#C9A84C;font-style:italic">✦ "La voluntad es eterna." Jerusalén está a salvo.</span>';
+      document.getElementById('codigo-secreto').style.display = 'block';
+      encontrarCruz(3);
+      mostrarToast('✦ Código WILLOFIRON desbloqueado');
     } else {
-      document.getElementById('tablero-msg').textContent = 'El paso está bloqueado por el enemigo.';
-      kyrosSeleccionado = false;
-      renderTablero();
+      document.getElementById('tablero-msg').innerHTML = '<span style="color:rgba(232,0,13,.8)">Llegaste, pero en ' + movimientos + ' movimientos. El rey esperaba 3. ↺ Reinicia.</span>';
     }
+  } else if (movimientos >= 3 && posKyros !== 3) {
+    juegoTerminado = true;
+    document.getElementById('tablero-msg').innerHTML = '<span style="color:rgba(232,0,13,.8)">Movimientos agotados. Reinicia y avanza directo hacia la salida.</span>';
   } else {
-    document.getElementById('tablero-msg').textContent = 'Solo puedes moverte a casillas adyacentes.';
-    kyrosSeleccionado = false;
-    renderTablero();
+    const restantes = 3 - movimientos;
+    document.getElementById('tablero-msg').innerHTML = 'Avanza. Te quedan <strong style="color:#C9A84C">' + restantes + '</strong> movimiento' + (restantes===1?'':'s') + '.';
   }
 }
 
