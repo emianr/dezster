@@ -389,7 +389,10 @@
 </div>
 
 <div class="mini-footer">
-  <span>© 2025 Dezster Chile</span>
+  <span>© 2025 Dezster Chile
+<!-- Cruz del Relicario en Kyros -->
+<span onclick="(function(){let cruces=JSON.parse(localStorage.getItem('dezster_cruces')||'[]');if(!cruces.includes(2)){cruces.push(2);localStorage.setItem('dezster_cruces',JSON.stringify(cruces));alert('✝ Cruz 2/5 encontrada! Sigue explorando...')}})()" style="cursor:pointer;opacity:.05;font-size:11px;color:#F5C518;transition:opacity .3s;display:inline-block;margin-left:8px" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='.05'">✝</span>
+</span>
   <span>Calama, Chile</span>
 </div>
 
