@@ -16,6 +16,7 @@
        VARIABLES Y RESET
     ════════════════════════════════════════ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { overflow-x: hidden; width: 100%; }
 
     :root {
       --red:      #E8000D;
@@ -206,9 +207,10 @@
        PREVENTA
     ════════════════════════════════════════ */
     .preventa-banner {
-      background: #1a0000; padding: 12px 48px;
+      background: #1a0000; padding: 12px 16px;
       display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid rgba(232,0,13,.3); gap: 16px; flex-wrap: wrap;
+      border-bottom: 1px solid rgba(232,0,13,.3); gap: 12px; flex-wrap: wrap;
+      overflow: hidden;
     }
     .preventa-left { display: flex; align-items: center; gap: 14px; }
     .preventa-badge {
@@ -255,6 +257,7 @@
       background: var(--red);
       padding: 9px 0;
       overflow: hidden;
+      width: 100%;
     }
     .ann-track {
       display: flex;
@@ -394,8 +397,8 @@
     .btn-ghost:hover { border-color: var(--white); }
 
     .hero-stats {
-      display: flex; gap: 48px;
-      margin-top: 60px; padding-top: 40px;
+      display: flex; gap: 48px; flex-wrap: wrap;
+      margin-top: 40px; padding-top: 32px;
       border-top: 1px solid var(--border);
     }
     .stat-num {
@@ -471,7 +474,7 @@
     /* ════════════════════════════════════════
        SECCIONES GENÉRICAS
     ════════════════════════════════════════ */
-    .section { padding: 80px 48px; }
+    .section { padding: 80px 48px; overflow: hidden; }
 
     .sec-head {
       display: flex; align-items: flex-end; justify-content: space-between;
@@ -1312,7 +1315,9 @@
       .mobile-menu a { font-size: 28px; padding: 14px 0; }
 
       /* ── HERO ── */
-      .hero { min-height: 100vw; }
+      .hero { min-height: auto; height: 100svh; max-height: 100svh; }
+      .hero-left { padding: 32px 16px; justify-content: flex-end; padding-bottom: 48px; }
+      .hero-stats { margin-top: 24px; padding-top: 20px; gap: 20px; }
       .hero-left {
         padding: 40px 16px 36px;
         border-right: none;
@@ -1338,7 +1343,7 @@
       /* ── CARRUSEL ── */
       .carousel-section { padding: 48px 0; }
       .carousel-header { padding: 0 16px; margin-bottom: 24px; flex-direction: column; align-items: flex-start; gap: 8px; }
-      .carousel-slide { width: calc(100vw - 48px); min-width: unset; }
+      .carousel-slide { width: calc(100vw - 32px); min-width: unset; max-width: 100%; }
       .carousel-controls { padding: 0 16px; margin-top: 20px; }
 
       /* ── SECCIONES ── */
@@ -1358,7 +1363,7 @@
       .prod-preventa-note { font-size: 9px; }
 
       /* ── FEAT BANNER ── */
-      .feat-banner { margin: 0 16px; grid-template-columns: 1fr; }
+      .feat-banner { margin: 0; grid-template-columns: 1fr; border-left: none; border-right: none; }
       .feat-img { min-height: 220px; order: -1; }
       .feat-content { padding: 32px 20px; }
       .feat-title { font-size: clamp(36px, 10vw, 56px); }
@@ -1367,7 +1372,7 @@
 
       /* ── PERSONAJES ── */
       .chars-section { padding: 40px 16px; }
-      .chars-grid { grid-template-columns: 1fr; }
+      .chars-grid { grid-template-columns: 1fr; width: 100%; }
       .char-card { min-height: 360px; padding: 32px 20px; }
       .char-name { font-size: 40px; }
       .char-desc { font-size: 12px; }
@@ -1469,7 +1474,7 @@
     ════════════════════════════════════════ */
     .carousel-section { padding: 80px 0; overflow: hidden; border-top: 1px solid var(--border); }
     .carousel-header { padding: 0 48px; margin-bottom: 40px; display: flex; align-items: flex-end; justify-content: space-between; }
-    .carousel-track-wrap { overflow: hidden; cursor: grab; user-select: none; }
+    .carousel-track-wrap { overflow: hidden; cursor: grab; user-select: none; width: 100%; }
     .carousel-track-wrap:active { cursor: grabbing; }
     .carousel-track {
       display: flex; gap: 1px;
