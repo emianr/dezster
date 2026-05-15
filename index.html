@@ -2701,6 +2701,24 @@
   }
 
   /* ── VALIDAR Y PROCESAR LA COMPRA ── */
+  // URL del Google Apps Script
+  const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyCHGWPm3O6WMX8giBwpr8egMNN5b3jC70TRdcRntvfl2XCVjaAmfenVMcM2v5vMs--/exec';
+
+  // Enviar datos al Google Sheets (en segundo plano, no bloquea el flujo)
+  async function registrarEnSheets(datos) {
+    try {
+      await fetch(SHEETS_URL, {
+        method: 'POST',
+        mode: 'no-cors', // Google Apps Script requiere no-cors
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos),
+      });
+      console.log('Registrado en Sheets OK');
+    } catch(err) {
+      console.log('Sheets error (no crítico):', err.message);
+    }
+  }
+
   async function procesarCompra() {
     // Limpiar error previo
     const errorEl = document.getElementById('co-error-msg');
@@ -2733,42 +2751,67 @@
     btn.textContent = 'Procesando...';
     btn.disabled = true;
 
+    // Preparar datos completos del pedido
+    const datosPedido = {
+      tipo:     'Preventa',
+      nombre:   nombre + ' ' + apellido,
+      email,
+      telefono,
+      region,
+      ciudad,
+      calle:    calle + (depto ? ', ' + depto : ''),
+      cp:       cp   || '',
+      rut:      rut  || '',
+      notas:    notas || '',
+      items:    cart,
+    };
+
+    // 1. Registrar en Google Sheets (siempre, sin importar si Flow funciona)
+    registrarEnSheets(datosPedido);
+
+    // 2. Enviar resumen por WhatsApp
+    const total = cart.reduce((s, i) => s + parseInt(String(i.price).replace(/\./g, ''), 10), 0);
+    let msg = '🛒 *NUEVO PEDIDO DEZSTER*\n\n';
+    msg += `👤 ${nombre} ${apellido}\n`;
+    msg += `📧 ${email}\n`;
+    msg += `📱 ${telefono}\n`;
+    msg += `📍 ${ciudad}, ${region}\n`;
+    msg += `🏠 ${calle}\n\n`;
+    msg += '*Productos:*\n';
+    cart.forEach(i => { msg += `• ${i.name} T:${i.size} - $${i.price}\n`; });
+    msg += `\n💰 *TOTAL: $${total.toLocaleString('es-CL')} CLP*`;
+    const waUrl = 'https://wa.me/56966942574?text=' + encodeURIComponent(msg);
+
     try {
+      // 3. Intentar pago con Flow
       const respuesta = await fetch('/.netlify/functions/crear-pago', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          items: cart,
-          email,
+          items: cart, email,
           nombre: nombre + ' ' + apellido,
-          envio: {
-            nombre:   nombre + ' ' + apellido,
-            telefono, region, ciudad, calle,
-            depto:    depto || '',
-            cp:       cp    || '',
-            rut:      rut   || '',
-            notas:    notas || '',
-          },
+          envio: datosPedido,
         }),
       });
 
       const datos = await respuesta.json();
 
       if (datos.urlPago) {
-        // Redirigir a Flow con el monto exacto
         window.location.href = datos.urlPago;
       } else {
-        // Mostrar el error exacto que viene de Flow
-        const mensajeError = datos.error || 'Error desconocido';
-        const codigoError  = datos.codigo ? ' (código ' + datos.codigo + ')' : '';
-        throw new Error(mensajeError + codigoError);
+        throw new Error(datos.error || 'Error de pago');
       }
 
     } catch (err) {
-      console.error('Error al procesar compra:', err);
+      // Si Flow falla, igual el pedido quedó en Sheets
+      // Redirigir a WhatsApp para completar el pago
+      console.log('Flow no disponible, redirigiendo a WhatsApp');
       btn.textContent = 'Ir a Pagar con Flow →';
       btn.disabled = false;
-      mostrarError('Error: ' + err.message);
+      
+      // Mostrar opción de continuar por WhatsApp
+      mostrarError('⚠️ Pedido registrado. Completa el pago por WhatsApp.');
+      setTimeout(() => { window.open(waUrl, '_blank'); }, 1500);
     }
   }
 
