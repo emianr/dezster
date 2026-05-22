@@ -1964,145 +1964,94 @@
 <!-- ══════════════════════════════════════
      SECCIÓN MUJER
 ══════════════════════════════════════ -->
-<section class="section" id="mujer" style="border-top:1px solid var(--border)">
-  <div class="sec-head">
-    <div>
-      <p class="sec-eyebrow">— Colección Mujer</p>
-      <h2 class="sec-title">Para Ella</h2>
+<section class="section" id="mujer" style="border-top:1px solid var(--border);position:relative;overflow:hidden">
+
+  <!-- Fondo sutil -->
+  <div style="position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse at 70% 50%,rgba(232,0,13,.04) 0%,transparent 70%)"></div>
+
+  <div style="position:relative;z-index:1">
+    <div class="sec-head">
+      <div>
+        <p class="sec-eyebrow">— Colección Mujer</p>
+        <h2 class="sec-title">Para Ella</h2>
+      </div>
     </div>
-    <button class="see-all">Ver Todo →</button>
-  </div>
 
-  <!-- TABS CATEGORÍAS -->
-  <div class="genero-tabs">
-    <button class="genero-tab active" onclick="switchTab(this,'mujer-tops')">Tops</button>
-    <button class="genero-tab" onclick="switchTab(this,'mujer-bottoms')">Bottoms</button>
-    <button class="genero-tab" onclick="switchTab(this,'mujer-hoodies')">Hoodies</button>
-    <button class="genero-tab" onclick="switchTab(this,'mujer-accesorios')">Accesorios</button>
-  </div>
+    <!-- PRÓXIMAMENTE CARD -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:0">
 
-  <!-- TOPS -->
-  <div class="genero-panel active" id="mujer-tops">
-    <div class="prod-grid">
-      <div class="prod-card"
-           data-name="DZT Void Tee Mujer"
-           data-price="24.990"
-           data-cat="Camiseta Mujer"
-           data-desc="Camiseta oversize corte mujer. Algodón 220g. Serigrafía exclusiva Drop 001."
-           onclick="openProduct(this)">
-        <div class="prod-img">
-          <img src="images/void-tee.jpg" alt="DZT Void Tee Mujer" />
-          <div class="prod-badge badge-new">New</div>
-        </div>
-        <div class="prod-info">
-          <p class="prod-cat">Camiseta · Mujer</p>
-          <p class="prod-name">DZT Void Tee</p>
-          <div class="prod-footer">
-            <span class="prod-price">$24.990</span>
-            <button class="prod-add">+ Ver</button>
+      <!-- LADO IZQUIERDO — Texto -->
+      <div style="background:var(--black2);padding:64px 48px;display:flex;flex-direction:column;justify-content:center">
+        <p style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:6px;color:var(--red);text-transform:uppercase;margin-bottom:20px">— En construcción</p>
+        <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(32px,5vw,64px);font-weight:900;text-transform:uppercase;letter-spacing:-1px;line-height:.9;color:var(--white);margin-bottom:24px">La Mujer<br>Dezster<br><span style="color:var(--red)">Se Acerca.</span></h3>
+        <p style="font-size:14px;color:var(--gray);line-height:1.9;max-width:380px;margin-bottom:32px">
+          Estamos diseñando algo que no existía antes — ropa para mujeres que no piden permiso. Sin cortes básicos. Sin colores pastel. Sin reglas.
+          <br><br>
+          <strong style="color:var(--white)">Drop Mujer 001 — Próximamente.</strong>
+        </p>
+
+        <!-- FORMULARIO LISTA DE ESPERA -->
+        <div>
+          <p style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:5px;color:var(--gray);text-transform:uppercase;margin-bottom:12px">Sé la primera en saberlo</p>
+          <div style="display:flex;gap:0;max-width:420px" id="waitlist-form">
+            <input type="email" id="waitlist-email" placeholder="tu@email.com" style="flex:1;background:var(--black3);border:1px solid var(--border);border-right:none;color:var(--white);font-family:'Barlow',sans-serif;font-size:14px;padding:13px 16px;outline:none;min-width:0" onfocus="this.style.borderColor='var(--red)'" onblur="this.style.borderColor='var(--border)'" />
+            <button onclick="registrarWaitlist()" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;background:var(--red);color:var(--black);border:none;padding:13px 20px;cursor:pointer;text-transform:uppercase;white-space:nowrap;transition:background .2s" onmouseover="this.style.background='#ff1a24'" onmouseout="this.style.background='var(--red)'">Avisar →</button>
           </div>
+          <div id="waitlist-ok" style="display:none;margin-top:12px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:3px;color:var(--red);text-transform:uppercase">✓ Anotada. Te avisamos primero.</div>
         </div>
       </div>
-      <div class="prod-card"
-           data-name="DZT Crop Tee"
-           data-price="22.990"
-           data-cat="Camiseta Mujer"
-           data-desc="Camiseta crop fit. Algodón suave. Corte femenino con logo Dezster."
-           onclick="openProduct(this)">
-        <div class="prod-img">
-          <img src="images/void-tee.jpg" alt="DZT Crop Tee" />
-          <div class="prod-badge badge-drop">Drop</div>
-        </div>
-        <div class="prod-info">
-          <p class="prod-cat">Camiseta · Mujer</p>
-          <p class="prod-name">DZT Crop Tee</p>
-          <div class="prod-footer">
-            <span class="prod-price">$22.990</span>
-            <button class="prod-add">+ Ver</button>
-          </div>
+
+      <!-- LADO DERECHO — Visual -->
+      <div style="background:var(--black3);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:64px 48px;text-align:center;min-height:480px;position:relative;overflow:hidden">
+        <!-- Círculo animado de fondo -->
+        <div style="position:absolute;width:300px;height:300px;border-radius:50%;border:1px solid rgba(232,0,13,.12);animation:pulseRing 3s ease infinite"></div>
+        <div style="position:absolute;width:220px;height:220px;border-radius:50%;border:1px solid rgba(232,0,13,.08);animation:pulseRing 3s ease infinite .5s"></div>
+        <div style="position:absolute;width:140px;height:140px;border-radius:50%;border:1px solid rgba(232,0,13,.06);animation:pulseRing 3s ease infinite 1s"></div>
+
+        <div style="position:relative;z-index:2;text-align:center">
+          <div style="font-size:56px;margin-bottom:20px;opacity:.3">◈</div>
+          <p style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:6px;color:var(--red);text-transform:uppercase;margin-bottom:16px">Drop Mujer 001</p>
+          <p style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(20px,3.5vw,36px);font-weight:900;text-transform:uppercase;color:var(--white);letter-spacing:-0.5px;line-height:1;margin-bottom:20px">Diseñado desde<br>Calama para<br>el mundo</p>
+          <p style="font-size:12px;color:var(--gray);line-height:1.7;max-width:260px;margin:0 auto">Sin límites de estilo.<br>Sin límites de actitud.<br><strong style="color:var(--white)">Solo Dezster.</strong></p>
         </div>
       </div>
+
     </div>
   </div>
 
-  <!-- BOTTOMS -->
-  <div class="genero-panel" id="mujer-bottoms">
-    <div class="prod-grid">
-      <div class="prod-card"
-           data-name="DZT Cargo Mujer"
-           data-price="36.990"
-           data-cat="Pantalón Mujer"
-           data-desc="Cargo pant fit mujer. Tela ripstop. Bolsillos funcionales."
-           onclick="openProduct(this)">
-        <div class="prod-img">
-          <img src="images/cargo-001.jpg" alt="DZT Cargo Mujer" />
-          <div class="prod-badge badge-new">New</div>
-        </div>
-        <div class="prod-info">
-          <p class="prod-cat">Pantalón · Mujer</p>
-          <p class="prod-name">DZT Cargo Mujer</p>
-          <div class="prod-footer">
-            <span class="prod-price">$36.990</span>
-            <button class="prod-add">+ Ver</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <style>
+    @keyframes pulseRing {
+      0%,100% { transform: scale(1); opacity: .6; }
+      50%      { transform: scale(1.08); opacity: 1; }
+    }
+  </style>
 
-  <!-- HOODIES -->
-  <div class="genero-panel" id="mujer-hoodies">
-    <div class="prod-grid">
-      <div class="prod-card"
-           data-name="DZT Hood Mujer"
-           data-price="46.990"
-           data-cat="Hoodie Mujer"
-           data-desc="Hoodie oversize mujer. Algodón 350g. Logo bordado. Capucha doble capa."
-           onclick="openProduct(this)">
-        <div class="prod-img">
-          <img src="images/arch-hood.jpg" alt="DZT Hood Mujer" />
-          <div class="prod-badge badge-drop">Drop</div>
-        </div>
-        <div class="prod-info">
-          <p class="prod-cat">Hoodie · Mujer</p>
-          <p class="prod-name">DZT Hood Mujer</p>
-          <div class="prod-footer">
-            <span class="prod-price">$46.990</span>
-            <button class="prod-add">+ Ver</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ACCESORIOS -->
-  <div class="genero-panel" id="mujer-accesorios">
-    <div class="prod-grid">
-      <div class="prod-card"
-           data-name="DZT Cap Mujer"
-           data-price="14.990"
-           data-cat="Accesorio Mujer"
-           data-desc="Cap ajustable con logo Dezster bordado. Talla única."
-           onclick="openProduct(this)">
-        <div class="prod-img">
-          <img src="images/snapback.jpg" alt="DZT Cap Mujer" />
-          <div class="prod-badge badge-new">New</div>
-        </div>
-        <div class="prod-info">
-          <p class="prod-cat">Accesorio · Mujer</p>
-          <p class="prod-name">DZT Cap Mujer</p>
-          <div class="prod-footer">
-            <span class="prod-price">$14.990</span>
-            <button class="prod-add">+ Ver</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <script>
+    function registrarWaitlist() {
+      var email = document.getElementById('waitlist-email').value.trim();
+      if (!email || !email.includes('@')) {
+        document.getElementById('waitlist-email').style.borderColor = 'var(--red)';
+        document.getElementById('waitlist-email').placeholder = 'Ingresa un email válido';
+        return;
+      }
+      // Guardar en Sheets si está disponible
+      var datos = { tipo: 'Waitlist Mujer', email: email, nombre: 'Lista de espera', items: [] };
+      fetch('https://script.google.com/macros/s/AKfycbyCHGWPm3O6WMX8giBwpr8egMNN5b3jC70TRdcRntvfl2XCVjaAmfenVMcM2v5vMs--/exec', {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'data=' + encodeURIComponent(JSON.stringify(datos))
+      }).catch(function(){});
+      document.getElementById('waitlist-form').style.display = 'none';
+      document.getElementById('waitlist-ok').style.display = 'block';
+    }
+  </script>
 
 </section>
 
+
+
 <!-- ══════════════════════════════════════
+     INSTAGRAM GRID<!-- ══════════════════════════════════════
      INSTAGRAM GRID
 ══════════════════════════════════════ -->
 <section class="section" style="padding-top:0">
